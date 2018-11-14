@@ -65,9 +65,9 @@ LOCK TABLES `documents` WRITE;
 
 INSERT INTO `documents` (`doc_id`, `user_id`, `file_path`, `file_name`)
 VALUES
-	(1,0,'/Users/alexkozlenko/Desktop/fall-18/cs322/project/files/test.rtf','test'),
-	(2,1,'/Users/alexkozlenko/Desktop/fall-18/cs322/project/files/test_jane.rtf','test_jane'),
-	(3,0,'/Users/alexkozlenko/Desktop/fall-18/cs322/project/files/test_john.rtf','test_john');
+	(1,0,'test','test'),
+	(2,1,'test_jane.rtf','test_jane'),
+	(3,0,'test_john.rtf','test_john');
 
 /*!40000 ALTER TABLE `documents` ENABLE KEYS */;
 UNLOCK TABLES;
