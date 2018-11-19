@@ -33,6 +33,7 @@ CREATE TABLE `complaints` (
   PRIMARY KEY (`comp_id`),
   KEY `compldocid` (`doc_id`),
 	KEY `compluserid` (`user_id`),
+	KEY `complfilename` (`file_name`),
   CONSTRAINT `compldocid` FOREIGN KEY (`doc_id`) REFERENCES `documents` (`doc_id`)
 	CONSTRAINT `compluserid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -59,6 +60,7 @@ CREATE TABLE `documents` (
   `file_path` varchar(255) NOT NULL DEFAULT '',
   `file_name` varchar(255) DEFAULT '',
   PRIMARY KEY (`doc_id`),
+	UNIQUE KEY `SECONDKEY` (`file_name`),
   KEY `docrefuid` (`user_id`),
   CONSTRAINT `docrefuid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
