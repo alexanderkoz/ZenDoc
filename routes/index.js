@@ -16,7 +16,9 @@ router.get('/profile', authenticationMiddleware(),function(req, res){
 router.get('/login',function(req, res){
   res.render('login', {title: 'Login'});
 });
-
+router.get('/test', function(req, res){
+  res.render('test')
+});
 
 router.get('/testpage', function(req, res){
   res.render('testpage')

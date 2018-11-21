@@ -16,7 +16,19 @@
   var index = require('./routes/index');
   var users = require('./routes/users');
 
+  //var express = require('express');
+  var bodyParser = require('body-parser');
+  var Pusher = require('pusher');
+
+  //var app = express();
+
+
+
+
+
   var app = express();
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   // DATABASE WIll not work without this. DONT DELETE IT
   require('dotenv').config();
 
@@ -32,6 +44,8 @@
   app.use(expressValidator());
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
+
+  app.use(express.static('./'));
 
     var options = {
       host: 'localhost',
