@@ -20,6 +20,14 @@ router.get('/test', function(req, res){
   res.render('test')
 });
 
+router.get('/complaintdoc', function(req, res){
+  res.render('complaintdoc')
+});
+
+router.get('/complaintou', function(req, res){
+  res.render('complaintou')
+});
+
 router.get('/testpage', function(req, res){
   res.render('testpage')
 });
