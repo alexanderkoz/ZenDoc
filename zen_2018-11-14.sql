@@ -29,12 +29,13 @@ CREATE TABLE `complaints` (
   `comp_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(255) DEFAULT NULL,
   `doc_id` int(11) unsigned NOT NULL,
-  `user_id` int(11) usigned DEFAULT NULL,
+  `user_id` int(11) unsigned DEFAULT NULL,
+	`complaint_type` varchar(10) DEFAULT '',
+	`file_name` varchar(255) DEFAULT '',
   PRIMARY KEY (`comp_id`),
   KEY `compldocid` (`doc_id`),
 	KEY `compluserid` (`user_id`),
-	KEY `complfilename` (`file_name`),
-  CONSTRAINT `compldocid` FOREIGN KEY (`doc_id`) REFERENCES `documents` (`doc_id`)
+  CONSTRAINT `compldocid` FOREIGN KEY (`doc_id`) REFERENCES `documents` (`doc_id`),
 	CONSTRAINT `compluserid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
