@@ -147,7 +147,8 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-	`account_type` varchar(255) DEFAULT NULL,
+	`account_type` varchar(10) DEFAULT NULL,
+  `whyOU` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
