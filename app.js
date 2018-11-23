@@ -11,9 +11,10 @@
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
   var MySQLStore = require('express-mysql-session')(session);
+  var mysql = require('./db');
+  const db = mysql.config();
 
-
-  var index = require('./routes/index');
+  var index = require('./routes/index')(db);
   var users = require('./routes/users');
 
   //var express = require('express');
