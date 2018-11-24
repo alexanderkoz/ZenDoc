@@ -18,14 +18,9 @@
 
   //var express = require('express');
   var bodyParser = require('body-parser');
-  var Pusher = require('pusher');
+  //var Pusher = require('pusher');
 
   //var app = express();
-
-
-
-
-
   var app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -49,10 +44,10 @@
 
     var options = {
       host: 'localhost',
-      user: 'root',
-      password: 'root',
-      database : 'college',
-      socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+    	user: 'root',
+    	password: 'root',
+    	database: 'zen',
+    	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
     };
   var sessionStore = new MySQLStore(options);
 
@@ -70,21 +65,24 @@
   app.use('/users', users);
 
   passport.use(new LocalStrategy(
-    function(username, password, done){
-      console.log(username);
-      console.log(password);
+  	function(username, password, done) {
+  		console.log(username);
+  		console.log(password);
 
-      const db = require('./db');
+  		const db = require('./db');
 
-      db.query('SELECT password FROM user WHERE username = ?', [username], function(err, results, fields){
-        if(err){done(err)};
-        if(results.length === 0){
-            done(null, false);
-        }
-            return done(null, 'sdjvnds');
+  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
+  			if (err) {
+  				done(err)
+  			};
 
-      })
-    }
+  			if (results.length == 0) {
+  				done(null, false);
+  			}
+  			return done(null, 'sdjvnds');
+
+  		})
+  	}
   ));
 
   // catch 404 and forward to error handler
