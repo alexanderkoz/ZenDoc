@@ -29,12 +29,13 @@ CREATE TABLE `complaints` (
   `comp_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(255) DEFAULT NULL,
   `doc_id` int(11) unsigned NOT NULL,
-  `user_id` int(11) usigned DEFAULT NULL,
+  `user_id` int(11) unsigned DEFAULT NULL,
+	`complaint_type` varchar(10) DEFAULT '',
+	`file_name` varchar(255) DEFAULT '',
   PRIMARY KEY (`comp_id`),
   KEY `compldocid` (`doc_id`),
 	KEY `compluserid` (`user_id`),
-	KEY `complfilename` (`file_name`),
-  CONSTRAINT `compldocid` FOREIGN KEY (`doc_id`) REFERENCES `documents` (`doc_id`)
+  CONSTRAINT `compldocid` FOREIGN KEY (`doc_id`) REFERENCES `documents` (`doc_id`),
 	CONSTRAINT `compluserid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -60,7 +61,6 @@ CREATE TABLE `documents` (
   `file_path` varchar(255) NOT NULL DEFAULT '',
   `file_name` varchar(255) DEFAULT '',
   PRIMARY KEY (`doc_id`),
-	UNIQUE KEY `SECONDKEY` (`file_name`),
   KEY `docrefuid` (`user_id`),
   CONSTRAINT `docrefuid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -147,7 +147,8 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-	`account_type` varchar(255) DEFAULT NULL,
+	`account_type` varchar(10) DEFAULT NULL,
+  `whyOU` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
