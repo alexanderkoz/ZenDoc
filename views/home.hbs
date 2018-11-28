@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Zen Doc</title>
+	<title>{{title}}</title>
 	<link rel="stylesheet" type="text/css" href="1.page.css">
 </head>
 <style>
@@ -25,7 +25,7 @@ body{
 }
 section{
 	width: 100%;
-	height: 50vh;
+	height: 10vh;
 	background-size: cover;
 }
 .menu{
@@ -84,19 +84,110 @@ nav ul li:hover ul{
 nav ul li ul a{
 	padding: 10px;
 }
+
+{{!-- card styles --}}
+
+.card {
+  position: relative;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+  background-color:rgba(255,255,255,.5);
+  width: 27%;
+  margin-left: 3%;
+  margin-top: 15%;
+}
+
+.card-header {
+  padding: .75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: rgba(0,0,0,.03);
+  border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: .2rem;
+  line-height: 1.2;
+  color: black;
+  text-transform: uppercase;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  padding: 1.25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+}
+
+{{!-- search-box styles --}}
+
+.search-container{
+  width: 490px;
+  display: block;
+  margin: 3% auto;
+}
+
+input#search-bar{
+  margin: 0 auto;
+  width: 100%;
+  height: 45px;
+  padding: 0 20px;
+  font-size: 1rem;
+  border: 1px solid #D0CFCE;
+  outline: none;
+  &:focus{
+    border: 1px solid #008ABF;
+    transition: 0.35s ease;
+    color: #008ABF;
+    &::-webkit-input-placeholder{
+      transition: opacity 0.45s ease; 
+  	  opacity: 0;
+     }
+    &::-moz-placeholder {
+      transition: opacity 0.45s ease; 
+  	  opacity: 0;
+     }
+    &:-ms-placeholder {
+     transition: opacity 0.45s ease; 
+  	 opacity: 0;
+     }    
+   }
+ }
+
+.search-icon{
+  position: relative;
+  float: right;
+  width: 75px;
+  height: 75px;
+  top: -62px;
+  right: -45px;
+}
+
+
 </style>
 <body>
 
 	<div class="menu">
-			<nav>
+		<nav>
 			<ul>
 				<li><a href="#">Create New Document</a></li>
 				<li><a href="#">Complaints</a>
-				<ul>
+					<ul>
 						<li><a href="#">Complaint About Ordinary User</a></li>
 						<li><a href="#">Complaint About Documents</a></li>
 						<li><a href="#">Other Complaints</a></li>
-					</ul></li>
+					</ul>
+				</li>
 				<li><a href="#">All Docouments</a></li>
 				<li><a href="./login">Sign in</a></li>
 				<li><a href="./register">Apply To Be OU</a>
@@ -105,5 +196,26 @@ nav ul li ul a{
 		</nav>
 	</div>
 	<section></section>
+	<form class="search-container">
+    	<input type="text" id="search-bar" placeholder="What can I help you with today?">
+    		<a href="#"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></a>
+  	</form>
+		
+	<div id="cardslist">
+		{{#each files}}
+		<a href={{this.url}}>
+			<div class="card">
+				<div class="card-header">
+					<div class="card-title">
+							{{this.file_name}}
+					</div>
+				</div>
+				<div class="card-body">
+					The main contents of the card go here. Some content or description or whatever you'd like to see.
+				</div> 
+			</div>
+		</a>
+		{{/each}}
+	</div>
 </body>
 </html>

@@ -1,10 +1,11 @@
-function getUsers(req, res, db) {
+function getDocs(req, res, db) {
    
-    db.query("SELECT * FROM users", (error, results) => {
+    db.query("SELECT * FROM documents;", (error, results) => {
         if(error) throw error;
-        console.log("Here we are getting users");
         res.json(results);
+        console.log(results);
     });
+
 }
 
-exports.getUsers = getUsers;
+exports.getDocs = getDocs;

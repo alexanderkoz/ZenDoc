@@ -33,10 +33,10 @@ module.exports = {
 	},
 	plugins: [
 		new ExtractTextPlugin("../css/style.css"),
-	    new DotenvPlugin({
-			sample: './.env.default',
-			path: './.env'
-	    }),
+	    // new DotenvPlugin({
+		// 	sample: './.env.default',
+		// 	path: './.env'
+	    // }),
 	    new BrowserSyncPlugin({
 	        host: 'localhost',
 	        port: 3001,

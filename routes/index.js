@@ -6,19 +6,36 @@ var mysql = require('../db');
 var doc = require('./doc');
 module.exports = function(db) {
   /* GET home page. */
+  var files;
+ 
   router.get('/', function(req, res){
+    db.query("SELECT * FROM documents;", (error, results) => {
+      if(error) throw error;
+     
+      files = results.map(function(item) {
+        item.url = "/document/" + item.doc_id
+        return item;
+      })
+      console.log(files);
+      res.render('home',{title: 'Zen Doc', files: files});
+    });
     console.log(req.user);
     console.log(req.isAuthenticated())
-    res.render('home',{title: 'home'});
+    
   });
-
-  router.get('/doc', function(req, res) {
-    doc.getUsers(req, res, db);
-  })
 
   router.get('/profile', authenticationMiddleware(),function(req, res){
     res.render('profile',{title:'profile'});
   });
+  //var file;
+  router.get('/document/:id', function(req, res) {
+    var id = req.params.id;
+    db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
+      if(error) throw error;
+      file = results;
+      res.render('doc', {title: 'Document', file:results[0]});
+    });
+});
 
   router.get('/login',function(req, res){
     res.render('login', {title: 'Login'});

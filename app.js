@@ -23,10 +23,6 @@
 
   //var app = express();
 
-
-
-
-
   var app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -83,7 +79,6 @@
             done(null, false);
         }
             return done(null, 'sdjvnds');
-
       })
     }
   ));
