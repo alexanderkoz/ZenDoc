@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var expressValidator = require('express-validator');
 var passport = require('passport');
+
 var mysql = require('../db');
 var doc = require('./doc');
 module.exports = function(db) {
@@ -65,6 +66,36 @@ module.exports = function(db) {
   router.get('/register', function(req, res, next) {
     res.render('register', { title: 'Registration' });
   });
+  
+  //Complaint form to complain about a document
+router.post('/complaint_doc', function(req, res, next) {
+	const text = req.body.text;
+	const file_name = req.body.file_name;
+	db.query("SELECT doc_id FROM documents WHERE file_name =?;", [file_name], (err, results, field) => {
+		if (err) throw err;
+		var d_id = results[0].doc_id;
+
+		db.query("INSERT INTO complaints(doc_id,file_name,comment_text, complaint_type) VALUES (?,?,?,'Doc');", [d_id, file_name, text], (err, results, field) => {
+			if (err) throw err;
+			res.redirect('/') //redirect to document panel
+		});
+	});
+});
+
+//Complaint Form to complain about OU
+router.post('/complaint_ou', function(req, res, next) {
+	const text = req.body.text;
+	const username = req.body.username;
+	db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
+		if (err) throw err;
+		var test_id = results[0].id;
+
+		db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+			if (err) throw err;
+			res.redirect('/') //redirect to document panel
+		});
+	});
+});
 
 
   router.post('/register', function(req, res, next) {
@@ -110,11 +141,13 @@ module.exports = function(db) {
       }
 
 
+
   });
 
   passport.serializeUser(function(user_id, done) {
     done(null, user_id);
   });
+
 
   passport.deserializeUser(function(user_id, done) {
       done(null, user_id);
@@ -130,3 +163,4 @@ module.exports = function(db) {
     }
     return router;
 }
+
