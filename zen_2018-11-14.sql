@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS `complaints`;
 
 CREATE TABLE `complaints` (
   `comp_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(255) DEFAULT NULL,
+  `comment_text` varchar(255) DEFAULT NULL,
   `doc_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
 	`complaint_type` varchar(10) DEFAULT '',
