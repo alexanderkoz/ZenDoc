@@ -65,11 +65,18 @@ input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgb
 <body>
 <div class="login">
 	<h1>Zen Doc</h1>
-    <form method="post">
-    	<input type="text" name="u" placeholder="username" required="required" />
-        <input type="password" name="p" placeholder="Password" required="required" />
-        <button type="submit" class="btn btn-primary btn-block btn-large">Log in</button>
-    </form>
+  <form method="POST" action="/login">
+    <center>
+
+      <div>
+        <input type="text" name="username" placeholder="Username" value="">
+        <input type="password" name="password" placeholder="Password">
+      </div>
+
+      <button>Login</button>
+    </center>
+    <br>
+  </form>
     <form method="get" action="/register">
     <button class="btn btn-primary btn-block btn-large">Apply To Be OU</button>
   </form>
