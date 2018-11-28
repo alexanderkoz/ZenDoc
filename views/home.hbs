@@ -150,17 +150,17 @@ input#search-bar{
     transition: 0.35s ease;
     color: #008ABF;
     &::-webkit-input-placeholder{
-      transition: opacity 0.45s ease; 
+      transition: opacity 0.45s ease;
   	  opacity: 0;
      }
     &::-moz-placeholder {
-      transition: opacity 0.45s ease; 
+      transition: opacity 0.45s ease;
   	  opacity: 0;
      }
     &:-ms-placeholder {
-     transition: opacity 0.45s ease; 
+     transition: opacity 0.45s ease;
   	 opacity: 0;
-     }    
+     }
    }
  }
 
@@ -182,15 +182,12 @@ input#search-bar{
 			<ul>
 				<li><a href="#">Create New Document</a></li>
 				<li><a href="#">Complaints</a>
-<<<<<<< HEAD
+
 					<ul>
-						<li><a href="#">Complaint About Ordinary User</a></li>
-						<li><a href="#">Complaint About Documents</a></li>
-=======
-				<ul>
+
 						<li><a href="./complaintou">Complaint About Ordinary User</a></li>
 						<li><a href="./complaintdoc">Complaint About Documents</a></li>
->>>>>>> 8442f854ca0c3c3a72f9a4a91827b5421469a44d
+
 						<li><a href="#">Other Complaints</a></li>
 					</ul>
 				</li>
@@ -206,7 +203,7 @@ input#search-bar{
     	<input type="text" id="search-bar" placeholder="What can I help you with today?">
     		<a href="#"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></a>
   	</form>
-		
+
 	<div id="cardslist">
 		{{#each files}}
 		<a href={{this.url}}>
@@ -218,7 +215,7 @@ input#search-bar{
 				</div>
 				<div class="card-body">
 					The main contents of the card go here. Some content or description or whatever you'd like to see.
-				</div> 
+				</div>
 			</div>
 		</a>
 		{{/each}}
