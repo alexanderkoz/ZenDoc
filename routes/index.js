@@ -55,19 +55,6 @@ router.get('/register', function(req, res, next) {
 	});
 });
 
-//Complaint form
-
-//router.post('/complaint', function(req, res, next) {
-//const text = req.body.text;
-//const file_name = req.body.file_name;
-
-//db.query("INSERT INTO complaints(file_name,comment_text) VALUES (?,?);", [file_name, text], (err, results, field) => {
-//if (err) throw err;
-//res.redirect('/') //redirect to document panel
-//});
-//});
-
-//****************************
 
 //Complaint form to complain about a document
 router.post('/complaint_doc', function(req, res, next) {
