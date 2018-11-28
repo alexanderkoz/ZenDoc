@@ -29,12 +29,12 @@ router.get('/test', function(req, res) {
 	res.render('test')
 });
 
-router.get('/complaint_doc', function(req, res) {
+router.get('/complaintdoc', function(req, res) {
 	res.render('complaintdoc')
 });
 //Get for complaint_ou
 
-router.get('/complaint_ou', function(req, res) {
+router.get('/complaintou', function(req, res) {
 	res.render('complaintou')
 });
 
