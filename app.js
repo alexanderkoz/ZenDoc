@@ -52,6 +52,7 @@
 
   app.use(express.static('./'));
 
+
   var options = {
   	host: 'localhost',
   	user: 'root',
@@ -59,6 +60,7 @@
   	database: 'zen',
   	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
   };
+
   var sessionStore = new MySQLStore(options);
 
   app.use(session({
@@ -82,11 +84,13 @@
 
   		const db = require('./db');
 
-  		db.query('SELECT password FROM user WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
-  			if (results.length === 0) {
+
+  			if (results.length == 0) {
+
   				done(null, false);
   			}
   			return done(null, 'sdjvnds');
