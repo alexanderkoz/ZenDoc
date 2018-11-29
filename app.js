@@ -53,13 +53,13 @@
   app.use(express.static('./'));
 
 
-    var options = {
-      host: 'localhost',
-    	user: 'root',
-    	password: 'root',
-    	database: 'zen',
-    	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-    };
+  var options = {
+  	host: 'localhost',
+  	user: 'root',
+  	password: 'root',
+  	database: 'zen',
+  	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+  };
 
   var sessionStore = new MySQLStore(options);
 

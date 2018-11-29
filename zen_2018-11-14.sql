@@ -28,7 +28,7 @@ DROP TABLE IF EXISTS `complaints`;
 CREATE TABLE `complaints` (
   `comp_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `comment_text` varchar(255) DEFAULT NULL,
-  `doc_id` int(11) unsigned NOT NULL,
+  `doc_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
 	`complaint_type` varchar(10) DEFAULT '',
 	`file_name` varchar(255) DEFAULT '',
@@ -42,7 +42,7 @@ CREATE TABLE `complaints` (
 LOCK TABLES `complaints` WRITE;
 /*!40000 ALTER TABLE `complaints` DISABLE KEYS */;
 
-INSERT INTO `complaints` (`comp_id`, `text`, `doc_id`)
+INSERT INTO `complaints` (`comp_id`, `comment_text`, `doc_id`)
 VALUES
 	(1,'bad grammar',1);
 
