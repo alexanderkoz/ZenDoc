@@ -82,23 +82,91 @@ router.post('/complaint_doc', function(req, res, next) {
 			if (err) throw err;
 			res.redirect('/') //redirect to document panel
 		});
+		console.log(req.user);
+		console.log(req.isAuthenticated())
+
 	});
-});
 
-//Complaint Form to complain about OU
-router.post('/complaint_ou', function(req, res, next) {
-	const text = req.body.text;
-	const username = req.body.username;
-	db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
-		if (err) throw err;
-		var test_id = results[0].id;
-
-		db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
-			if (err) throw err;
-			res.redirect('/') //redirect to document panel
+	router.get('/profile', authenticationMiddleware(), function(req, res) {
+		res.render('profile', {
+			title: 'profile'
 		});
 	});
-});
+	//var file;
+	router.get('/document/:id', function(req, res) {
+		var id = req.params.id;
+		db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
+			if (error) throw error;
+			file = results;
+			res.render('doc', {
+				title: 'Document',
+				file: results[0]
+			});
+		});
+	});
+
+	router.get('/login', function(req, res) {
+		res.render('login', {
+			title: 'Login'
+		});
+	});
+	router.get('/test', function(req, res) {
+		res.render('test')
+	});
+
+	router.get('/complaintdoc', function(req, res) {
+		res.render('complaintdoc')
+	});
+
+	router.get('/complaintou', function(req, res) {
+		res.render('complaintou')
+	});
+
+	router.get('/testpage', function(req, res) {
+		res.render('testpage')
+	});
+	router.post('/login', passport.authenticate(
+		'local', {
+			successRedirect: '/profile',
+			failureRedirect: '/login'
+
+		}));
+
+	router.get('/register', function(req, res, next) {
+		res.render('register', {
+			title: 'Registration'
+		});
+	});
+
+	//Complaint form to complain about a document
+	router.post('/complaint_doc', function(req, res, next) {
+		const text = req.body.text;
+		const file_name = req.body.file_name;
+		db.query("SELECT doc_id FROM documents WHERE file_name =?;", [file_name], (err, results, field) => {
+			if (err) throw err;
+			var d_id = results[0].doc_id;
+
+			db.query("INSERT INTO complaints(doc_id,file_name,comment_text, complaint_type) VALUES (?,?,?,'Doc');", [d_id, file_name, text], (err, results, field) => {
+				if (err) throw err;
+				res.redirect('/') //redirect to document panel
+			});
+		});
+	});
+
+	//Complaint Form to complain about OU
+	router.post('/complaint_ou', function(req, res, next) {
+		const text = req.body.text;
+		const username = req.body.username;
+		db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
+			if (err) throw err;
+			var test_id = results[0].id;
+
+			db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+				if (err) throw err;
+				res.redirect('/') //redirect to document panel
+			});
+		});
+	});
 
 
 router.post('/register', function(req, res, next) {
@@ -152,22 +220,24 @@ const errors = req.validationErrors();
 
 });
 
-  passport.serializeUser(function(user_id, done) {
-    done(null, user_id);
-  });
+	});
+
+	passport.serializeUser(function(user_id, done) {
+		done(null, user_id);
+	});
 
 
-  passport.deserializeUser(function(user_id, done) {
-      done(null, user_id);
-  });
+	passport.deserializeUser(function(user_id, done) {
+		done(null, user_id);
+	});
 
-    function authenticationMiddleware(){
-      return (req, res, next)=>{
-        console.log( `req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+	function authenticationMiddleware() {
+		return (req, res, next) => {
+			console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
 
-        if (req.isAuthenticated()) return next();
-        res.redirect('/profile')
-      }
-    }
-    return router;
+			if (req.isAuthenticated()) return next();
+			res.redirect('/profile')
+		}
+	}
+	return router;
 }
