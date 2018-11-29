@@ -38,6 +38,8 @@ module.exports = function(db) {
     });
 });
 
+
+	
   router.get('/login',function(req, res){
     res.render('login', {title: 'Login'});
   });
@@ -68,6 +70,7 @@ module.exports = function(db) {
   });
   
   //Complaint form to complain about a document
+
 router.post('/complaint_doc', function(req, res, next) {
 	const text = req.body.text;
 	const file_name = req.body.file_name;
