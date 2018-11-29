@@ -11,9 +11,10 @@
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
   var MySQLStore = require('express-mysql-session')(session);
+  var mysql = require('./db');
+  const db = mysql.config();
 
-
-  var index = require('./routes/index');
+  var index = require('./routes/index')(db);
   var users = require('./routes/users');
 
 
@@ -21,14 +22,9 @@
 
   //var express = require('express');
   var bodyParser = require('body-parser');
-  var Pusher = require('pusher');
+  //var Pusher = require('pusher');
 
   //var app = express();
-
-
-
-
-
   var app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
@@ -56,13 +52,15 @@
 
   app.use(express.static('./'));
 
-  var options = {
-  	host: 'localhost',
-  	user: 'root',
-  	password: 'root',
-  	database: 'college',
-  	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-  };
+
+    var options = {
+      host: 'localhost',
+    	user: 'root',
+    	password: 'root',
+    	database: 'zen',
+    	socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+    };
+
   var sessionStore = new MySQLStore(options);
 
   app.use(session({
@@ -86,11 +84,13 @@
 
   		const db = require('./db');
 
-  		db.query('SELECT password FROM user WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
-  			if (results.length === 0) {
+
+  			if (results.length == 0) {
+
   				done(null, false);
   			}
   			return done(null, 'sdjvnds');
