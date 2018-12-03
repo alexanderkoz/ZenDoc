@@ -82,7 +82,7 @@
   		console.log(username);
   		console.log(password);
 
-  		const db = require('./db');
+  		//const db = require('./db');
 
   		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {

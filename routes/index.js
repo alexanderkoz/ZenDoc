@@ -130,7 +130,7 @@ const errors = req.validationErrors();
 		const whyOU = req.body.whyOU;
 		const password = req.body.password;
 
-		const db = require('../db.js');
+		//const db = require('../db.js');
 		//MAKE QUERY TO POST DATA TO database
 		db.query('INSERT INTO users (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields){
 			if(error) throw error;
