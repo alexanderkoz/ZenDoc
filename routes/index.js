@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var expressValidator = require('express-validator');
 var passport = require('passport');
-
 var mysql = require('../db');
 var doc = require('./doc');
 module.exports = function(db) {
@@ -22,7 +21,6 @@ module.exports = function(db) {
     });
     console.log(req.user);
     console.log(req.isAuthenticated())
-
   });
 
   router.get('/documents', function(req, res){
@@ -37,19 +35,7 @@ module.exports = function(db) {
     });
   });
 
-  router.post('/search', function(req, res) {
-    connection.query('SELECT * FROM documents WHERE doc_id = ?', [id], (error, todos, fields) => {
-      if (error) {
-        console.error('An error occurred while executing the query')
-        throw error
-      }
-      console.log(documents)
-    })
-    //to do ajax request to localhost:3000/search
-  })
-
-
-  router.get('/profile',function(req, res){
+  router.get('/profile', authenticationMiddleware(), function(req, res){
     res.render('profile',{title:'profile'});
   });
   //var file;
@@ -61,8 +47,6 @@ module.exports = function(db) {
       res.render('doc', {title: 'Document', file:results[0]});
     });
 });
-
-
 
   router.get('/login',function(req, res){
     res.render('login', {title: 'Login'});
