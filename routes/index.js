@@ -6,106 +6,126 @@ var mysql = require('../db');
 var doc = require('./doc');
 module.exports = function(db) {
   /* GET home page. */
-  var files;
 
-  router.get('/', function(req, res){
-    db.query("SELECT * FROM documents;", (error, results) => {
-      if(error) throw error;
+router.get('/', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
 
-      files = results.map(function(item) {
-        item.url = "/document/" + item.doc_id
-        return item;
-      })
-      console.log(files);
-      res.render('home',{title: 'Zen Doc', files: files});
-    });
-    console.log(req.user);
-    console.log(req.isAuthenticated())
+    files = results.map(function(item) {
+      item.url = "/document/" + item.doc_id
+      return item;
+    })
+    res.render('home',{title: 'Zen Doc', files: files});
   });
+  console.log(req.user);
+  console.log(req.isAuthenticated())
+});
 
-  router.get('/documents', function(req, res){
-    db.query("SELECT * FROM documents;", (error, results) => {
-      if(error) throw error;
-
-      files = results.map(function(item) {
-        item.url = "/document/" + item.doc_id
-        return item;
-      })
-      res.json(files);
-    });
-  });
-
-  router.get('/profile', authenticationMiddleware(), function(req, res){
-    res.render('profile',{title:'profile'});
-  });
-  //var file;
-  router.get('/document/:id', function(req, res) {
-    var id = req.params.id;
-    db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
-      if(error) throw error;
-      file = results;
-      res.render('doc', {title: 'Document', file:results[0]});
+router.get('/documents', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/document/" + item.doc_id
+      return item;
+    })
+    res.json(files);
     });
 });
 
-  router.get('/login',function(req, res){
-    res.render('login', {title: 'Login'});
-  });
-  router.get('/test', function(req, res){
-    res.render('test')
-  });
+router.get('/users', function(req, res){
+  db.query("SELECT * FROM users;", (error, results) => {
+    if(error) throw error;
+    users = results.map(function(user) {
+      user.url = "/user/" + user.id
+      return user;
+    })
+    res.json(users);
+    });
+});
 
-  router.get('/complaintdoc', function(req, res){
-    res.render('complaintdoc')
+//router.get('/profile', authenticationMiddleware(), function(req, res){
+router.get('/profile', function(req, res){
+  res.render('profile',{title:'profile'});
+});
+
+router.get('/document/:id', function(req, res) {
+  var id = req.params.id;
+  db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
+    if(error) throw error;
+    file = results;
+    res.render('doc', {title: 'Document', file:results[0]});
   });
+});
 
-  router.get('/complaintou', function(req, res){
-    res.render('complaintou')
-  });
+router.get('/user/:id', function(req, res) {
+  var id = req.params.id;
+  db.query("SELECT * FROM users where id = " + id, (error, results) => {
+    if(error) throw error;
+    user = results;
+    res.render('user', {title: 'UserPage', user:results[0]});
+    });
+});
 
-  router.get('/testpage', function(req, res){
-    res.render('testpage')
-  });
-  router.post('/login', passport.authenticate(
-      'local',{
-        successRedirect: '/profile',
-        failureRedirect: '/login'
+router.get('/login',function(req, res){
+  res.render('login', {title: 'Login'});
+});
 
-  }));
+router.get('/test', function(req, res){
+  res.render('test')
+});
 
-  router.get('/register', function(req, res, next) {
-    res.render('register', { title: 'Registration' });
-  });
+router.get('/complaintdoc', function(req, res){
+  res.render('complaintdoc')
+});
 
-  //Complaint form to complain about a document
+router.get('/complaintou', function(req, res){
+  res.render('complaintou')
+});
+
+router.get('/testpage', function(req, res){
+  res.render('testpage')
+});
+
+router.post('/login', passport.authenticate(
+  'local',{
+    successRedirect: '/profile',
+    failureRedirect: '/login'
+
+}));
+
+router.get('/register', function(req, res, next) {
+  res.render('register', { title: 'Registration' });
+});
+
+//Complaint form to complain about a document
 
 router.post('/complaint_doc', function(req, res, next) {
-	const text = req.body.text;
-	const file_name = req.body.file_name;
-	db.query("SELECT doc_id FROM documents WHERE file_name =?;", [file_name], (err, results, field) => {
-		if (err) throw err;
-		var d_id = results[0].doc_id;
+  const text = req.body.text;
+  const file_name = req.body.file_name;
+  db.query("SELECT doc_id FROM documents WHERE file_name =?;", [file_name], (err, results, field) => {
+    if (err) throw err;
+    var d_id = results[0].doc_id;
 
-		db.query("INSERT INTO complaints(doc_id,file_name,comment_text, complaint_type) VALUES (?,?,?,'Doc');", [d_id, file_name, text], (err, results, field) => {
-			if (err) throw err;
-			res.redirect('/') //redirect to document panel
-		});
-	});
+    db.query("INSERT INTO complaints(doc_id,file_name,comment_text, complaint_type) VALUES (?,?,?,'Doc');", [d_id, file_name, text], (err, results, field) => {
+      if (err) throw err;
+      res.redirect('/') //redirect to document panel
+    });
+  });
 });
 
 //Complaint Form to complain about OU
 router.post('/complaint_ou', function(req, res, next) {
-	const text = req.body.text;
-	const username = req.body.username;
-	db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
-		if (err) throw err;
-		var test_id = results[0].id;
+  const text = req.body.text;
+  const username = req.body.username;
+  db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
+    if (err) throw err;
+    var test_id = results[0].id;
 
-		db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
-			if (err) throw err;
-			res.redirect('/') //redirect to document panel
-		});
-	});
+    db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+      if (err) throw err;
+      res.redirect('/') //redirect to document panel
+    });
+  });
 });
 
 
@@ -122,60 +142,57 @@ req.checkBody('email', 'Email address must be between 4-100 characters long, ple
 //req.checkBody('passwordMatch', 'Passwords do not match, please try again.').equals(req.body.password);
 
 const errors = req.validationErrors();
-	if(errors){
+if(errors){
 
-		console.log(`errors: ${JSON.stringify(errors)}`);
+  console.log(`errors: ${JSON.stringify(errors)}`);
 
-		res.render('register', {
-			title: 'Registration Error',
-			errors: errors
-		} );
-	} else {
-		const first_name = req.body.first_name;
-		const last_name = req.body.last_name
-		const email = req.body.email;
-		const username = req.body.username;
-		const whyOU = req.body.whyOU;
-		const password = req.body.password;
+  res.render('register', {
+    title: 'Registration Error',
+    errors: errors
+  } );
+} else {
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name
+  const email = req.body.email;
+  const username = req.body.username;
+  const whyOU = req.body.whyOU;
+  const password = req.body.password;
 
-		//const db = require('../db.js');
-		//MAKE QUERY TO POST DATA TO database
-		db.query('INSERT INTO users (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields){
-			if(error) throw error;
+//const db = require('../db.js');
+//MAKE QUERY TO POST DATA TO database
+  db.query('INSERT INTO users (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields){
+    if(error) throw error;
 
-				db.query('SELECT LAST_INSERT_ID() as users_id', function(error, results, fields){
-						if(error) throw error;
+      db.query('SELECT LAST_INSERT_ID() as users_id', function(error, results, fields){
+          if(error) throw error;
 
-						const users_id = results[0];
-						console.log("bbb");
-						//console.log(results[0]);
-						req.login(users_id ,function(err){
-								res.redirect('/login');
-
-						});
-				})
-		})
-	}
-
-
+          const users_id = results[0];
+          console.log("bbb");
+          //console.log(results[0]);
+          req.login(users_id ,function(err){
+              res.redirect('/login');
+          });
+      })
+  })
+  }
 });
 
-  passport.serializeUser(function(user_id, done) {
-    done(null, user_id);
-  });
+passport.serializeUser(function(user_id, done) {
+  done(null, user_id);
+});
 
 
-  passport.deserializeUser(function(user_id, done) {
-      done(null, user_id);
-  });
+passport.deserializeUser(function(user_id, done) {
+  done(null, user_id);
+});
 
-    function authenticationMiddleware(){
-      return (req, res, next)=>{
-        console.log( `req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+function authenticationMiddleware(){
+  return (req, res, next)=>{
+    console.log( `req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
 
-        if (req.isAuthenticated()) return next();
-        res.redirect('/profile')
-      }
-    }
-    return router;
+    if (req.isAuthenticated()) return next();
+    res.redirect('/profile')
+  }
+}
+return router;
 }
