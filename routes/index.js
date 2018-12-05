@@ -25,7 +25,31 @@ module.exports = function(db) {
 
   });
 
-  router.get('/profile', authenticationMiddleware(),function(req, res){
+  router.get('/documents', function(req, res){
+    db.query("SELECT * FROM documents;", (error, results) => {
+      if(error) throw error;
+
+      files = results.map(function(item) {
+        item.url = "/document/" + item.doc_id
+        return item;
+      })
+      res.json(files);
+    });
+  });
+
+  router.post('/search', function(req, res) {
+    connection.query('SELECT * FROM documents WHERE doc_id = ?', [id], (error, todos, fields) => {
+      if (error) {
+        console.error('An error occurred while executing the query')
+        throw error
+      }
+      console.log(documents)
+    })
+    //to do ajax request to localhost:3000/search
+  })
+
+
+  router.get('/profile',function(req, res){
     res.render('profile',{title:'profile'});
   });
   //var file;
