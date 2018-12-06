@@ -2,65 +2,131 @@ var express = require('express');
 var router = express.Router();
 var expressValidator = require('express-validator');
 var passport = require('passport');
-const fs = require('fs');
-
-
 var mysql = require('../db');
 var doc = require('./doc');
 module.exports = function(db) {
-	/* GET home page. */
-	var files;
+  /* GET home page. */
 
-	router.get('/', function(req, res) {
-		db.query("SELECT * FROM documents;", (error, results) => {
-			if (error) throw error;
+router.get('/', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
 
-			files = results.map(function(item) {
-				item.url = "/document/" + item.doc_id
-				return item;
-			})
-			console.log(files);
-			res.render('home', {
-				title: 'Zen Doc',
-				files: files
-			});
-		});
-		console.log(req.user);
-		console.log(req.isAuthenticated())
+    files = results.map(function(item) {
+      item.url = "/document/" + item.doc_id
+      return item;
+    })
+    res.render('home',{title: 'Zen Doc', files: files});
+  });
+  console.log(req.user);
+  console.log(req.isAuthenticated())
+});
 
-	});
+router.get('/documents', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/document/" + item.doc_id
+      return item;
+    })
+    res.json(files);
+    });
+});
 
-	router.get('/profile', authenticationMiddleware(), function(req, res) {
-		res.render('profile', {
-			title: 'profile'
-		});
-	});
-	//var file;
-	router.get('/document/:id', function(req, res) {
-		var id = req.params.id;
-		db.query("SELECT * FROM documents where doc_id = ?;", [id], (error, results) => {
-			if (error) throw error;
-			file = results;
-			res.render('doc', {
-				title: 'Document',
-				file: results[0]
-			});
-		});
-	});
+router.get('/users', function(req, res){
+  db.query("SELECT * FROM users;", (error, results) => {
+    if(error) throw error;
+    users = results.map(function(user) {
+      user.url = "/user/" + user.id
+      return user;
+    })
+    res.json(users);
+    });
+});
 
+//router.get('/profile', authenticationMiddleware(), function(req, res){
+router.get('/profile', function(req, res){
+  res.render('profile',{title:'profile'});
+});
 
-	router.get('/login', function(req, res) {
-		res.render('login', {
-			title: 'Login'
-		});
-	});
-	router.get('/test', function(req, res) {
-		res.render('test')
-	});
+router.get('/document/:id', function(req, res) {
+  var id = req.params.id;
+  db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
+    if(error) throw error;
+    file = results;
+    res.render('doc', {title: 'Document', file:results[0]});
+  });
+});
 
-	router.get('/complaintdoc', function(req, res) {
-		res.render('complaintdoc')
-	});
+router.get('/user/:id', function(req, res) {
+  var id = req.params.id;
+  db.query("SELECT * FROM users where id = " + id, (error, results) => {
+    if(error) throw error;
+    user = results;
+    res.render('user', {title: 'UserPage', user:results[0]});
+    });
+});
+
+router.get('/login',function(req, res){
+  res.render('login', {title: 'Login'});
+});
+
+router.get('/test', function(req, res){
+  res.render('test')
+});
+
+router.get('/complaintdoc', function(req, res){
+  res.render('complaintdoc')
+});
+
+router.get('/complaintou', function(req, res){
+  res.render('complaintou')
+});
+
+router.get('/testpage', function(req, res){
+  res.render('testpage')
+});
+
+router.post('/login', passport.authenticate(
+  'local',{
+    successRedirect: '/profile',
+    failureRedirect: '/login'
+
+}));
+
+router.get('/register', function(req, res, next) {
+  res.render('register', { title: 'Registration' });
+});
+
+//Complaint form to complain about a document
+
+router.post('/complaint_doc', function(req, res, next) {
+  const text = req.body.text;
+  const file_name = req.body.file_name;
+  db.query("SELECT doc_id FROM documents WHERE file_name =?;", [file_name], (err, results, field) => {
+    if (err) throw err;
+    var d_id = results[0].doc_id;
+
+    db.query("INSERT INTO complaints(doc_id,file_name,comment_text, complaint_type) VALUES (?,?,?,'Doc');", [d_id, file_name, text], (err, results, field) => {
+      if (err) throw err;
+      res.redirect('/') //redirect to document panel
+    });
+  });
+});
+
+//Complaint Form to complain about OU
+router.post('/complaint_ou', function(req, res, next) {
+  const text = req.body.text;
+  const username = req.body.username;
+  db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
+    if (err) throw err;
+    var test_id = results[0].id;
+
+    db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+      if (err) throw err;
+      res.redirect('/') //redirect to document panel
+    });
+  });
+});
 
 	router.get('/complaintou', function(req, res) {
 		res.render('complaintou')
