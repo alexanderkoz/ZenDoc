@@ -44,7 +44,7 @@ router.get('/users', function(req, res){
 });
 
 //router.get('/profile', authenticationMiddleware(), function(req, res){
-router.get('/profile', function(req, res){
+router.get('/profile', authenticationMiddleware(), function(req, res){
   res.render('profile',{title:'profile'});
 });
 
@@ -69,7 +69,15 @@ router.get('/user/:id', function(req, res) {
 router.get('/login',function(req, res){
   res.render('login', {title: 'Login'});
 });
-router.get('/adminlogin',function(req, res){
+
+router.get('/logout',function(req, res){
+  req.logout();
+	req.session.destroy();
+	res.redirect('/login');
+});
+
+
+router.get('/adminlogin', function(req, res){
   res.render('adminlogin', {title: 'Login'});
 });
 
@@ -89,7 +97,7 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
-router.get('/adminpage', function(req, res){
+router.get('/adminpage', authenticationMiddleware(), function(req, res){
   res.render('adminpage')
 });
 
