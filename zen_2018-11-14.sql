@@ -23,6 +23,21 @@
 # Dump of table complaints
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `users_application`;
+
+CREATE TABLE `users_application` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `account_type` varchar(10) DEFAULT NULL,
+  `whyOU` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `complaints`;
 
 CREATE TABLE `complaints` (
