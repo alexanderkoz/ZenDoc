@@ -44,7 +44,7 @@ router.get('/users', function(req, res){
 });
 
 //router.get('/profile', authenticationMiddleware(), function(req, res){
-router.get('/profile', function(req, res){
+router.get('/profile', authenticationMiddleware(), function(req, res){
   res.render('profile',{title:'profile'});
 });
 
@@ -70,6 +70,17 @@ router.get('/login',function(req, res){
   res.render('login', {title: 'Login'});
 });
 
+router.get('/logout',function(req, res){
+  req.logout();
+	req.session.destroy();
+	res.redirect('/login');
+});
+
+
+router.get('/adminlogin', function(req, res){
+  res.render('adminlogin', {title: 'Login'});
+});
+
 router.get('/test', function(req, res){
   res.render('test')
 });
@@ -86,10 +97,22 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
+router.get('/adminpage', authenticationMiddleware(), function(req, res){
+  res.render('adminpage')
+});
+
+
 router.post('/login', passport.authenticate(
   'local',{
     successRedirect: '/profile',
     failureRedirect: '/login'
+
+}));
+
+router.post('/adminlogin', passport.authenticate(
+  'local',{
+    successRedirect: '/adminpage',
+    failureRedirect: '/adminlogin'
 
 }));
 
