@@ -45,6 +45,7 @@ router.get('/users', function(req, res){
 
 //router.get('/profile', authenticationMiddleware(), function(req, res){
 router.get('/profile', authenticationMiddleware(), function(req, res){
+
   res.render('profile',{title:'profile'});
 });
 
