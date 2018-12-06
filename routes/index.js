@@ -69,6 +69,9 @@ router.get('/user/:id', function(req, res) {
 router.get('/login',function(req, res){
   res.render('login', {title: 'Login'});
 });
+router.get('/adminlogin',function(req, res){
+  res.render('adminlogin', {title: 'Login'});
+});
 
 router.get('/test', function(req, res){
   res.render('test')
@@ -86,10 +89,22 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
+router.get('/adminpage', function(req, res){
+  res.render('adminpage')
+});
+
+
 router.post('/login', passport.authenticate(
   'local',{
     successRedirect: '/profile',
     failureRedirect: '/login'
+
+}));
+
+router.post('/adminlogin', passport.authenticate(
+  'local',{
+    successRedirect: '/adminpage',
+    failureRedirect: '/adminlogin'
 
 }));
 
