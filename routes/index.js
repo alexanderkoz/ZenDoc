@@ -238,7 +238,7 @@ router.post('/complaint_ou', function(req, res, next) {
 
 			//const db = require('../db.js');
 			//MAKE QUERY TO POST DATA TO database
-			db.query('INSERT INTO users (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields) {
+			db.query('INSERT INTO users_application (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields) {
 				if (error) throw error;
 
 				db.query('SELECT LAST_INSERT_ID() as users_id', function(error, results, fields) {
