@@ -34,6 +34,7 @@ CREATE TABLE `users_application` (
   `password` varchar(255) DEFAULT NULL,
   `account_type` varchar(10) DEFAULT NULL,
   `whyOU` varchar(255) DEFAULT NULL,
+	`image_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -164,6 +165,7 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
 	`account_type` varchar(10) DEFAULT NULL,
   `whyOU` varchar(255) NOT NULL,
+	`image_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
