@@ -43,9 +43,8 @@ router.get('/users', function(req, res){
     });
 });
 
-//router.get('/profile', authenticationMiddleware(), function(req, res){
 router.get('/profile', authenticationMiddleware(), function(req, res){
-
+//router.get('/profile', function(req, res){
   res.render('profile',{title:'profile'});
 });
 
@@ -99,9 +98,54 @@ router.get('/testpage', function(req, res){
 });
 
 router.get('/adminpage', authenticationMiddleware(), function(req, res){
-  res.render('adminpage')
+//router.get('/adminpage', function(req, res){
+  res.render('adminpage', {title: 'AdminPage'});
 });
 
+router.get('/applications', function(req, res){
+  db.query("SELECT * FROM users_application;", (error, results) => {
+    if(error) throw error;
+    users = results;
+    res.render('applications', {title: 'Applications', users:users});
+  });
+});
+
+router.delete('/applications/:id', function(req, res){
+	var id = req.params.id;
+  db.query("DELETE FROM users_application WHERE id = " + id, (error) => {
+		if(error) throw error;
+		res.send(); 
+	});
+});
+
+router.get('/applications/:id', function(req, res) {
+	var id = req.params.id;
+	db.query(`INSERT INTO users SELECT * FROM users_application WHERE id = ${id};`, (error) => {
+		if(error) throw error;
+		db.query(`DELETE FROM users_application WHERE id = ${id};`, (error) => {
+			if(error) throw error;
+			res.send(); 
+		})	
+	})
+})
+
+router.get('/complaints', function(req, res){
+	//var names;
+  db.query("SELECT * FROM complaints;", (error, results) => {
+		if(error) throw error;
+		db.query("SELECT users.first_name, users.last_name from users INNER JOIN complaints ON users.id=complaints.user_id;", (error, results) => {
+			if(error) throw error;
+			names = results;
+			//console.log("names");
+			//console.log(names);
+			res.render('complaints', {names:names});
+		})
+		complaints = results;
+		//console.log("complaints");
+		//console.log(complaints);
+    res.render('complaints', {title: 'Complaints', complaints:complaints});
+  });
+});
 
 router.post('/login', passport.authenticate(
   'local',{
