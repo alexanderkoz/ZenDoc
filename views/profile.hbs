@@ -130,8 +130,7 @@ input#search-bar{
 
 .main-div {
 	color: white;
-	margin-left: 300px;
-	
+	margin: 5% 27%;
 }
 
 .sub-div {
@@ -144,6 +143,11 @@ input#search-bar{
 
 h2 {
 	margin-top: 30px;
+}
+
+.image {
+    float: left;
+    margin: 3% 7%;
 }
 
 </style>
@@ -162,35 +166,41 @@ h2 {
 
 					</ul>
 				</li>
-				<li><a href="#">All Documents</a></li>
-				<li><a href="/logout">Logout</a></li>
 
-					</li>
+					<li><a href="#">All Documents</a></li>
+					<li><a href="/logout">Logout</a></li>
+					
+				</li>
 			</ul>
 		</nav>
 	</div>
   {{!-- {{results.1.first_name}} --}}
-	<section></section>
-	<form class="search-container">
-    	<input type="text" id="search-bar" placeholder="What can I help you with today?">
-    	<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
-  	</form>
-	<div class="main-div">
-		<h2>General Information</h2>
-		<div class="sub-div">
-			<p class="info">Name: {{user.first_name}} {{user.last_name}}</p>
-			<p class="info">Username: {{user.username}}</p>
-			<p class="info">My reason to become OU: {{user.whyOU}}</p>
+		<section></section>
+		<form class="search-container">
+			<input type="text" id="search-bar" placeholder="What can I help you with today?">
+			<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
+		</form>
+		<div class="image">
+				<img height="200" width="200" src="images/{{user.image_name}}">
 		</div>
-		<h2>Contact Information</h2>
-		<div class="sub-div">
-			<p class="info">Email: {{user.email}}</p>
-		</div>
-		<h2>Documents</h2>
-		<div class="sub-div">
-			<p class="info">Document names</p>
-		</div>
-	</div>
+        <div class="main-div">
+            <h2>General Information</h2>
+            <div class="sub-div">
+                <p class="info">Name: {{user.first_name}} {{user.last_name}}</p>
+                <p class="info">Username: {{user.username}}</p>
+                <p class="info">My reason to become OU: {{user.whyOU}}</p>
+            </div>
+            <h2>Contact Information</h2>
+            <div class="sub-div">
+                <p class="info">Email: {{user.email}}</p>
+            </div>
+            <h2>Documents</h2>
+            <div class="sub-div">
+                {{#each docs}}
+                <p class="info">{{this.file_name}}</p>
+            {{/each}}
+            </div>
+	    </div>
     </body>
     <script src="/js/auto-complete.min.js"></script>
 <script>

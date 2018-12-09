@@ -51,6 +51,7 @@ router.get('/profile/', function(req, res){
 		last_name: "Bobby",
 		email: "bob@mail.com",
 		username: "bob",
+		image_name: "boy6.jpg",
 		whyOU: "Idk what to say"
 	}
 	res.render('profile',{title:'profile', user:user});
@@ -74,6 +75,7 @@ router.get('/user/:id', function(req, res) {
 		db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
 			if(error) throw error;
 			var docs = results;
+			console.log(user);
 			res.render('user', {title: 'UserPage', user:user, docs:docs});
 		});
   });
@@ -294,11 +296,12 @@ router.post('/complaint_ou', function(req, res, next) {
 			const email = req.body.email;
 			const username = req.body.username;
 			const whyOU = req.body.whyOU;
+			const image_name = req.body.image_name;
 			const password = req.body.password;
 
 			//const db = require('../db.js');
 			//MAKE QUERY TO POST DATA TO database
-			db.query('INSERT INTO users_application (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields) {
+			db.query('INSERT INTO users_application (first_name, last_name, email, username, password, image_name, whyOU) VALUES (?,?,?,?,?,?,?)', [first_name, last_name, email, username, password, image_name, whyOU], function(error, results, fields) {
 				if (error) throw error;
 
 				db.query('SELECT LAST_INSERT_ID() as users_id', function(error, results, fields) {
