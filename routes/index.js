@@ -43,8 +43,8 @@ router.get('/users', function(req, res){
     });
 });
 
-//router.get('/profile', authenticationMiddleware(), function(req, res){
-router.get('/profile/', function(req, res){
+router.get('/profile', authenticationMiddleware(), function(req, res){
+//router.get('/profile/', function(req, res){
 	var user = {
 		id: 11,
 		first_name: "Bob",
@@ -112,8 +112,8 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
-//router.get('/adminpage', authenticationMiddleware(), function(req, res){
-router.get('/adminpage', function(req, res){
+router.get('/adminpage', authenticationMiddleware(), function(req, res){
+//router.get('/adminpage', function(req, res){
   res.render('adminpage', {title: 'AdminPage'});
 });
 
