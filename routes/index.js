@@ -15,7 +15,7 @@ router.get('/', function(req, res){
       item.url = "/document/" + item.doc_id
       return item;
     })
-    res.render('home',{title: 'Zen Doc', files: files});
+    res.render('home',{title: 'Zen Doc', files: files.slice(files.length - 3, files.length)});
   });
   console.log(req.user);
   console.log(req.isAuthenticated())
@@ -43,10 +43,19 @@ router.get('/users', function(req, res){
     });
 });
 
-//router.get('/profile', authenticationMiddleware(), function(req, res){
 router.get('/profile', authenticationMiddleware(), function(req, res){
-
-  res.render('profile',{title:'profile'});
+//router.get('/profile/', function(req, res){
+	var user = {
+		id: 11,
+		first_name: "Bob",
+		last_name: "Bobby",
+		email: "bob@mail.com",
+		username: "bob",
+		image_name: "boy6.jpg",
+		whyOU: "Idk what to say"
+	}
+	res.render('profile',{title:'profile', user:user});
+	
 });
 
 router.get('/document/:id', function(req, res) {
@@ -61,10 +70,15 @@ router.get('/document/:id', function(req, res) {
 router.get('/user/:id', function(req, res) {
   var id = req.params.id;
   db.query("SELECT * FROM users where id = " + id, (error, results) => {
-    if(error) throw error;
-    user = results;
-    res.render('user', {title: 'UserPage', user:results[0]});
-    });
+		if(error) throw error;
+		var user = results[0];
+		db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
+			if(error) throw error;
+			var docs = results;
+			console.log(user);
+			res.render('user', {title: 'UserPage', user:user, docs:docs});
+		});
+  });
 });
 
 router.get('/login',function(req, res){
@@ -99,9 +113,57 @@ router.get('/testpage', function(req, res){
 });
 
 router.get('/adminpage', authenticationMiddleware(), function(req, res){
-  res.render('adminpage')
+//router.get('/adminpage', function(req, res){
+  res.render('adminpage', {title: 'AdminPage'});
 });
 
+router.get('/applications', function(req, res){
+  db.query("SELECT * FROM users_application;", (error, results) => {
+    if(error) throw error;
+    users = results;
+    res.render('applications', {title: 'Applications', users:users});
+  });
+});
+
+router.delete('/applications/:id', function(req, res){
+	var id = req.params.id;
+  db.query("DELETE FROM users_application WHERE id = " + id, (error) => {
+		if(error) throw error;
+		res.send(); 
+	});
+});
+
+router.get('/applications/:id', function(req, res) {
+	var id = req.params.id;
+	db.query(`INSERT INTO users SELECT * FROM users_application WHERE id = ${id};`, (error) => {
+		if(error) throw error;
+		db.query(`DELETE FROM users_application WHERE id = ${id};`, (error) => {
+			if(error) throw error;
+			res.send(); 
+		})	
+	})
+})
+
+router.get('/complaints', function(req, res){
+  db.query("SELECT * FROM complaints;", (error, results) => {
+		if(error) throw error;
+		var complaints = results;
+		db.query("SELECT users.id, users.first_name, users.last_name from users INNER JOIN complaints ON users.id=complaints.user_id;", (error, results) => {
+			if(error) throw error;
+			var names = results;
+			for (var i = 0; i < complaints.length; i++) {
+				for (var j = 0; j < names.length; j++) {
+					if (complaints[i].user_id === names[j].id) {
+						complaints[i].first_name = names[j].first_name;
+						complaints[i].last_name = names[j].last_name;
+					}
+				} 
+			}
+			res.render('complaints', {title: 'Complaints', complaints:complaints});
+		})
+	
+  });
+});
 
 router.post('/login', passport.authenticate(
   'local',{
@@ -163,12 +225,12 @@ router.post('/complaint_ou', function(req, res, next) {
 	router.get('/testpage', function(req, res) {
 		res.render('testpage')
 	});
+
 	router.post('/login', passport.authenticate(
 		'local', {
 			successRedirect: '/profile',
 			failureRedirect: '/login'
-
-		}));
+	}));
 
 	router.get('/register', function(req, res, next) {
 		res.render('register', {
@@ -200,7 +262,7 @@ router.post('/complaint_ou', function(req, res, next) {
 			if (err) throw err;
 			var test_id = results[0].id;
 
-			db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+			db.query("INSERT INTO complaints(user_id, comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
 				if (err) throw err;
 				res.redirect('/') //redirect to document panel
 			});
@@ -234,11 +296,12 @@ router.post('/complaint_ou', function(req, res, next) {
 			const email = req.body.email;
 			const username = req.body.username;
 			const whyOU = req.body.whyOU;
+			const image_name = req.body.image_name;
 			const password = req.body.password;
 
 			//const db = require('../db.js');
 			//MAKE QUERY TO POST DATA TO database
-			db.query('INSERT INTO users_application (first_name, last_name, email, username, password, whyOU) VALUES (?,?,?,?,?,?)', [first_name, last_name, email, username, password, whyOU], function(error, results, fields) {
+			db.query('INSERT INTO users_application (first_name, last_name, email, username, password, image_name, whyOU) VALUES (?,?,?,?,?,?,?)', [first_name, last_name, email, username, password, image_name, whyOU], function(error, results, fields) {
 				if (error) throw error;
 
 				db.query('SELECT LAST_INSERT_ID() as users_id', function(error, results, fields) {
@@ -254,8 +317,6 @@ router.post('/complaint_ou', function(req, res, next) {
 				})
 			})
 		}
-
-
 	});
 
 	passport.serializeUser(function(user_id, done) {
