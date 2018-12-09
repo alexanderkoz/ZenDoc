@@ -93,6 +93,26 @@ h2 {
     margin: 2% 5%;
 }
 
+a:link {
+  color: white;
+  text-decoration: none;
+}
+
+/* visited link */
+a:visited {
+  color: lightgray;
+}
+
+/* mouse over link */
+a:hover {
+  color: lightgray;
+}
+
+/* selected link */
+a:active {
+  color: white;
+}
+
         </style>
     </head>
     <body>
@@ -113,9 +133,14 @@ h2 {
             </div>
             <h2>Documents</h2>
             <div class="sub-div">
-                {{#each docs}}
-                <p class="info">{{this.file_name}}</p>
-            {{/each}}
+                {{!-- {{#each docs}}
+                    <p class="info">{{this.file_name}}</p>
+                {{/each}} --}}
+            {{#each files}}
+		        <a href={{this.url}}>
+			        <p class="info">{{this.file_name}}</p>
+				</a>
+		    {{/each}}
             </div>
 	    </div>
     </body>
