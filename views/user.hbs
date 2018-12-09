@@ -71,12 +71,53 @@ font-weight:700;
 .c_form h1 { color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.3); letter-spacing:1px; text-align:center; }
 [type="submit"]:hover { background:#CC4949; }
 
+.main-div {
+	color: white;
+	margin-left: 300px;
+	
+}
+
+.sub-div {
+	margin: 30px;
+}
+
+.info {
+	font-size: 20px;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+
         </style>
     </head>
     <body>
-    <div class="c_form">
+    <div class="main-form">
 
-        <h1>{{user.first_name}} {{user.last_name}}</h1>
+        <div class="main-div">
+		<h2>General Information</h2>
+		<div class="sub-div">
+			<p class="info">Name: {{user.first_name}} {{user.last_name}}</p>
+			<p class="info">Username: {{user.username}}</p>
+			<p class="info">My reason to become OU: {{user.whyOU}}</p>
+		</div>
+		<h2>Contact Information</h2>
+		<div class="sub-div">
+			<p class="info">Email: {{user.email}}</p>
+		</div>
+		<h2>Documents</h2>
+		<div class="sub-div">
+			{{#each docs}}
+            <p class="info">{{this.file_name}}</p>
+        {{/each}}
+		</div>
+	</div>
+
+        {{!-- <h1>{{user.first_name}} {{user.last_name}}</h1>
+        {{#each docs}}
+            <h1>{{this.file_name}}</h1>
+        {{/each}} --}}
         
     </div>
     </body>
