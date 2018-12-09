@@ -1,4 +1,6 @@
 
+module.exports = function(db) {
+
 function saveToFile()
 {
   var text = document.getElementById("inputText").value;
@@ -34,3 +36,25 @@ function loadFromFile()
 
   fileReader.readAsText(fileLoad, "UTF-8");
 }
+
+//Taboo words
+/*
+function tabooReplace()
+{
+  db.query("SELECT word FROM taboo_words;", (err,results,next) =>{
+    if(err) throw err;
+    var tabooWords = results;
+    var text = document.getElementById(inputText).value;
+    for(i =0; i<tabooWords.length;i++)
+    {
+      if(text==tabooWords[i])
+      {
+          var replaceWord = text.replace(new RegExp(tabooWords[i], "g"), "UNK");
+          document.getElementById('inputText').value = replaceWord;
+      }
+    }
+  });
+
+}
+}
+*/
