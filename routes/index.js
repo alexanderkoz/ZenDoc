@@ -44,8 +44,14 @@ router.get('/users', function(req, res){
 });
 
 router.get('/profile', authenticationMiddleware(), function(req, res){
-//router.get('/profile', function(req, res){
-  res.render('profile',{title:'profile'});
+	//var id = req.params.id;
+	db.query("SELECT first_name, last_name FROM users WHERE id = 0 " , (error, results)=>{
+		if (error){
+			throw error;
+		}
+  res.render('profile',{results});
+		console.log(results);
+	})
 });
 
 router.get('/document/:id', function(req, res) {
@@ -114,7 +120,7 @@ router.delete('/applications/:id', function(req, res){
 	var id = req.params.id;
   db.query("DELETE FROM users_application WHERE id = " + id, (error) => {
 		if(error) throw error;
-		res.send(); 
+		res.send();
 	});
 });
 
@@ -124,8 +130,8 @@ router.get('/applications/:id', function(req, res) {
 		if(error) throw error;
 		db.query(`DELETE FROM users_application WHERE id = ${id};`, (error) => {
 			if(error) throw error;
-			res.send(); 
-		})	
+			res.send();
+		})
 	})
 })
 
@@ -149,6 +155,7 @@ router.get('/complaints', function(req, res){
 
 router.post('/login', passport.authenticate(
   'local',{
+
     successRedirect: '/profile',
     failureRedirect: '/login'
 
@@ -290,7 +297,7 @@ router.post('/complaint_ou', function(req, res, next) {
 
 					const users_id = results[0];
 					console.log("bbb");
-					//console.log(results[0]);
+					console.log(results[0]);
 					req.login(users_id, function(err) {
 						res.redirect('/login');
 
@@ -313,7 +320,7 @@ router.post('/complaint_ou', function(req, res, next) {
 
 	function authenticationMiddleware() {
 		return (req, res, next) => {
-			console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+			console.log(`req.session.passport.users: ${JSON.stringify(req.session.passport)}`);
 
 			if (req.isAuthenticated()) return next();
 			res.redirect('/profile')

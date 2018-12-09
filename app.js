@@ -84,7 +84,7 @@ var express = require('express');
 
   		//const db = require('./db');
 
-  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT id, password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
@@ -93,7 +93,7 @@ var express = require('express');
 
   				done(null, false);
   			}
-  			return done(null, 'lsdkjfhgldakj');
+  			return done(null, {user_id: results[0].id});
 
   		})
   	}
