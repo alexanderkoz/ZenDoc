@@ -6,7 +6,7 @@ var express = require('express');
   var bodyParser = require('body-parser');
   var expressValidator = require('express-validator');
 
-  //Authentication Pagckage
+  //Authentication Package
   var session = require('express-session');
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
@@ -16,9 +16,6 @@ var express = require('express');
 
   var index = require('./routes/index')(db);
   var users = require('./routes/users');
-
-
-
 
   //var express = require('express');
   var bodyParser = require('body-parser');
@@ -66,7 +63,7 @@ var express = require('express');
   app.use(session({
   	secret: 'ihvhjdshfdfjfgs',
   	resave: false,
-  	store: sessionStore,
+  	//store: sessionStore,
   	saveUninitialized: false,
   	//cookie: { secure: true }
   }))
@@ -79,15 +76,18 @@ var express = require('express');
 
   passport.use(new LocalStrategy(
   	function(username, password, done) {
-  		console.log(username);
-  		console.log(password);
-  		db.query('SELECT id, password FROM users WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT * FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
   			if (results.length == 0) {
   				done(null, false);
-  			}  return done(null, {user_id: results[0].id}); // this userid after login should go to index.js into profile page.
+        }  
+        var user = results[0]
+        if (user.password !== password) {
+          done(null, false);
+        }
+        return done(null, user); // this userid after login should go to index.js into profile page.
   		})
   	}
   ));
