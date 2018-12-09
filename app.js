@@ -81,20 +81,13 @@ var express = require('express');
   	function(username, password, done) {
   		console.log(username);
   		console.log(password);
-
-  		//const db = require('./db');
-
   		db.query('SELECT id, password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
-
   			if (results.length == 0) {
-
   				done(null, false);
-  			}
-  			return done(null, {user_id: results[0].id});
-
+  			}  return done(null, {user_id: results[0].id}); // this userid after login should go to index.js into profile page.
   		})
   	}
   ));

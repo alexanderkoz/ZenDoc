@@ -44,8 +44,10 @@ router.get('/users', function(req, res){
 });
 
 router.get('/profile', authenticationMiddleware(), function(req, res){
-	//var id = req.params.id;
-	db.query("SELECT first_name, last_name FROM users WHERE id = 0 " , (error, results)=>{
+
+
+ // id =0, I dont know how to pass ID from app.js after login to here.
+	db.query("SELECT first_name, last_name, username, email, whyOU, image_name  FROM users WHERE id =  0" , (error, results)=>{
 		if (error){
 			throw error;
 		}
