@@ -23,9 +23,14 @@ body{
     height: 0;
 }
 
+.user-pict {
+    float: left;
+}
+
 .user-info {
     float: left;
     min-width: 350px;
+    margin-left: 20px;
 }
 
 .main-div {
@@ -68,6 +73,9 @@ button {
     <div class="users-wrapper">
         {{#each users}}	
             <div class="main-div  clearfix" data-user-id={{this.id}}>
+                <div class="user-pict">
+                    <img height="100" width="100" src="images/{{this.image_name}}">
+                </div>
                 <div class="user-info">
                     Name: {{this.first_name}} {{this.last_name}}
                     </br>
