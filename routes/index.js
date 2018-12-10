@@ -33,6 +33,28 @@ router.get('/documents', function(req, res){
     });
 });
 
+router.get('/alldocuments', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/doc_editor/" + item.doc_id
+      return item;
+		})
+    res.render('alldocuments', {title: 'All Documents', user:req.user, files:files});
+    });
+});
+
+router.get('/alldocuments2', function(req, res){
+  db.query("SELECT * FROM documents;", (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/doc_editor/" + item.doc_id
+      return item;
+    })
+    res.render('alldocuments2', {title: 'All Documents', files:files});
+    });
+});
+
 router.get('/users', function(req, res){
   db.query("SELECT * FROM users;", (error, results) => {
     if(error) throw error;
@@ -44,12 +66,18 @@ router.get('/users', function(req, res){
     });
 });
 
-router.get('/profile', authenticationMiddleware(), function(req, res){
-//router.get('/profile', function(req, res){
-	res.render('profile', {user: req.user});
-	console.log('in profile');
-	console.log(req.user);
-})
+//router.get('/profile', authenticationMiddleware(), function(req, res){
+router.get('/profile', function(req, res){
+	db.query("SELECT * FROM documents where user_id = " + req.user.id, (error, results) => {
+		if(error) throw error;
+		//var docs = results;
+		files = results.map(function(item) {
+			item.url = "/doc_editor/" + item.doc_id
+			return item;
+		});
+		res.render('profile', {title: 'Profile', user:req.user, files:files});
+	});
+});
 
 router.get('/taboowords', function(req, res){
   db.query("SELECT * FROM taboo_words;", (error, results) => {
@@ -93,7 +121,7 @@ router.get('/doc_editor/:id', function(req, res) {
 		file = results;
     fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
 			if(error) throw error;
-			res.render('doceditor2', {title: 'DocPage', file:results[0], contents});
+			res.render('doceditor', {title: 'DocPage', file:results[0], contents, user: req.user});
 			}); 
   	});
 });
@@ -101,8 +129,18 @@ router.get('/doc_editor/:id', function(req, res) {
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
 	const file_path = '../../../../Downloads/';
-	const user_id = 3;
+	const user_id = req.user.id;
 	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
+		if (err) throw err;
+		res.send();
+	});
+});
+
+router.post('/saveword', function(req, res) {
+	const word = req.body.word;
+	const doc_id = 3;
+	db.query("SET FOREIGN_KEY_CHECKS=0");
+	db.query("INSERT INTO taboo_words (word, doc_id) VALUES (?,?);", [word, doc_id], (err, results, field) => {
 		if (err) throw err;
 		res.send();
 	});
@@ -140,9 +178,13 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
-router.get('/adminpage', authenticationMiddleware(), function(req, res){
-//router.get('/adminpage', function(req, res){
-  res.render('adminpage', {title: 'AdminPage'});
+//router.get('/adminpage', authenticationMiddleware(), function(req, res){
+router.get('/adminpage', function(req, res){
+	db.query("SELECT * FROM taboo_words;", (error, results) => {
+    if(error) throw error;
+    words = results;
+	res.render('adminpage', {title: 'AdminPage', words: words});
+	});
 });
 
 router.get('/applications', function(req, res){
@@ -299,6 +341,20 @@ router.post('/complaint_ou', function(req, res, next) {
 			});
 		});
 	});
+
+	// router.get('/deleteword', function(req, res){
+	// 	db.query("SELECT * FROM taboo_words;", (err, results) => {
+	// 		if(err) throw error;
+	// 		res.json(results);
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			db.query("DELETE FROM taboo_words WHERE word = " + , (error) => {
+	// 				if(error) throw error;
+	// 				res.send();
+	// 			});
+	// 			console.log(results[i].word);
+	// 		}
+	// 	});
+	// });
 
 	router.post('/register', function(req, res, next) {
 		//checn input if its valid

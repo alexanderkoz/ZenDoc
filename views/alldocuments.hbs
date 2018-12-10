@@ -72,9 +72,10 @@ font-weight:700;
 [type="submit"]:hover { background:#CC4949; }
 
 .main-div {
-	color: white;
-	margin: 9% 27%;
-}
+    color: white;
+    margin-bottom: 20px;
+    margin-left: 70px;
+    }
 
 .sub-div {
 	margin: 30px;
@@ -85,12 +86,7 @@ font-weight:700;
 }
 
 h2 {
-	margin-top: 30px;
-}
-
-.image {
-    float: left;
-    margin: 2% 5%;
+	margin-top: 20px;
 }
 
 a:link {
@@ -113,32 +109,52 @@ a:active {
   color: white;
 }
 
+#red {
+        background-color: darkred;
+    }
+
+    #green {
+        background-color: darkgreen;
+    }
+
+.doc-info {
+        float: left;
+        min-width: 350px;
+        margin-left: 20px;
+    }
+
+.clearfix:after {
+    content: '';
+    visibility: hidden;
+    display: block;
+    clear: both;
+    height: 0;
+}
+
         </style>
     </head>
     <body>
-        <div class="image">
-			<img height="200" width="200" src="/images/{{user.image_name}}">
-		</div>
-
         <div class="main-div">
-            <h2>General Information</h2>
-            <div class="sub-div">
-                <p class="info">Name: {{user.first_name}} {{user.last_name}}</p>
-                <p class="info">Username: {{user.username}}</p>
-                <p class="info">My reason to become OU: {{user.whyOU}}</p>
+            <h2>List of all documents</h2>
+           
+            <div class="users-wrapper">
+                {{#each files}}	
+                    <div class="main-div  clearfix"}>
+                        <div class="doc-info">
+                            <a href={{this.url}}>
+                                <p class="info">{{this.file_name}}</p>
+                            </a>
+                        </div>
+                        <div> 
+                            <button class="unlock-button" id="green">Unlock</button>
+                            <button class="lock-button" id="red">Lock</button>
+                        </div>
+                    </div>		
+                {{/each}}
             </div>
-            <h2>Contact Information</h2>
-            <div class="sub-div">
-                <p class="info">Email: {{user.email}}</p>
-            </div>
-            <h2>Documents</h2>
-            <div class="sub-div">
-            {{#each files}}
-		        <a href={{this.url}}>
-			        <p class="info">{{this.file_name}}</p>
-				</a>
-		    {{/each}}
-            </div>
-	    </div>
+        </div>
     </body>
 </html>
+
+
+
