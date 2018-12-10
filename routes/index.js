@@ -292,7 +292,7 @@ router.post('/complaint_ou', function(req, res, next) {
 	});
 
 	router.get('/doc_editor', function(req, res) {
-		res.render('doceditor')
+		res.render('doceditor2')
 	});
 
 	router.get('/testpage', function(req, res) {
