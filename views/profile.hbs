@@ -150,13 +150,33 @@ h2 {
     margin: 3% 7%;
 }
 
+.doc-link:link {
+  color: white;
+  text-decoration: none;
+}
+
+/* visited link */
+.doc-link:visited {
+  color: lightgray;
+}
+
+/* mouse over link */
+.doc-link:hover {
+  color: lightgray;
+}
+
+/* selected link */
+.doc-link:active {
+  color: white;
+}
+
 </style>
 <body>
 
 	<div class="menu">
 		<nav>
 			<ul>
-				<li><a href="#">Create New Document</a></li>
+				<li><a href="./doc_editor">Create New Document</a></li>
 				<li><a href="#">Complaints</a>
 
 					<ul>
@@ -167,7 +187,7 @@ h2 {
 					</ul>
 				</li>
 
-					<li><a href="#">All Documents</a></li>
+					<li><a href="/alldocuments">All Documents</a></li>
 					<li><a href="/logout">Logout</a></li>
 
 				</li>
@@ -201,9 +221,11 @@ h2 {
         
             <h2>Documents</h2>
             <div class="sub-div">
-                {{#each docs}}
-                <p class="info">{{this.file_name}}</p>
-            {{/each}}
+                {{#each files}}
+					<a class="doc-link" href={{this.url}}>
+						<p class="info">{{this.file_name}}</p>
+					</a>
+		    	{{/each}}
             </div>
 	    </div>
     </body>

@@ -81,6 +81,18 @@ nav ul li ul a{
 	padding: 10px;
 }
 
+section {
+	height: 50px;
+}
+
+.info {
+	margin: 0 auto;
+}
+
+.main-div {
+	margin-left: 30px;
+}
+
 </style>
 
 <body>
@@ -96,12 +108,50 @@ nav ul li ul a{
 				</li>
                 <li><a href="./complaints">Resolve complaints</a></li>
                 <li><a href="./applications">Applications</a></li>
-				<li><a href="#">All Documents</a></li>
+				<li><a href="./alldocuments2">All Documents</a></li>
 				<li><a href="./login">Sign in</a></li>
 				<li><a href="./register">Apply To Be OU</a>
 					</li>
 			</ul>
 		</nav>
 	</div>
+	<section></section>
+	<div class="main-div">
+		<h1>Welcome to Administrative Page</h1>
+		<h2>Maintain Taboo Words</h2>
+		<h3>Here is the list of taboo words</h3>
+		{{#each words}}
+			<p class="info">{{this.word}}</p>
+		{{/each}}
+		<h3>Enter a taboo word you want to add or delete</h3>
+		<input type="text" name="word" id="word">
+		</br>
+		<button id="add">Add</button>
+		<button id="delete">Delete</button>
+	</div>
 </body>
+
+<script>
+	
+	document.getElementById("add").addEventListener("click", function(){
+		var tabooWord = document.getElementById("word").value;
+		fetch('/saveword', {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}, 
+    	body: JSON.stringify({word: tabooWord})})
+    	.then(response => {
+      	alert("Taboo word is successfully added!")
+    	})
+	});
+
+	document.getElementById("delete").addEventListener("click", function(){
+    	var tabooWord = document.getElementById("word").value;
+    	alert(tabooWord);
+	});
+
+</script>
+
 </html>

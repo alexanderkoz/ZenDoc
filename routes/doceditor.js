@@ -23,7 +23,7 @@ function saveToFile()
     }, 
     body: JSON.stringify({file_name: fileName})})
     .then(response => {
-      alert("File saved")
+      alert("File successfully saved!")
     })
 }
 
