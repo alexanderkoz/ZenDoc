@@ -11,7 +11,11 @@
     </tr>
     <tr>
       <td colspan="3">
-        <textarea id="inputText" cols="250" rows="65" onkeyup="tabooReplace()">{{contents}}</textarea>
+        {{#if user.id}}	
+            <textarea id="inputText" cols="250" rows="65" onkeyup="tabooReplace()">{{contents}}</textarea>
+        {{else }}
+            <textarea id="inputText" cols="250" rows="65" onkeyup="tabooReplace()" readonly>{{contents}}</textarea>
+        {{/if}}
       </td>
     </tr>
 
