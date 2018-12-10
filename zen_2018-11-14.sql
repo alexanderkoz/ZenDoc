@@ -76,6 +76,8 @@ CREATE TABLE `documents` (
   `user_id` int(11) unsigned NOT NULL,
   `file_path` varchar(255) NOT NULL DEFAULT '',
   `file_name` varchar(255) DEFAULT '',
+  `locked` bit(1) DEFAULT b'0',
+	`shared` bit(1) DEFAULT b'0',
   PRIMARY KEY (`doc_id`),
   KEY `docrefuid` (`user_id`),
   CONSTRAINT `docrefuid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
