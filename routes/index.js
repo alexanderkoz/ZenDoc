@@ -66,8 +66,8 @@ router.get('/users', function(req, res){
     });
 });
 
-//router.get('/profile', authenticationMiddleware(), function(req, res){
-router.get('/profile', function(req, res){
+router.get('/profile', authenticationMiddleware(), function(req, res){
+//router.get('/profile', function(req, res){
 	db.query("SELECT * FROM documents where user_id = " + req.user.id, (error, results) => {
 		if(error) throw error;
 		//var docs = results;
@@ -178,8 +178,8 @@ router.get('/testpage', function(req, res){
   res.render('testpage')
 });
 
-//router.get('/adminpage', authenticationMiddleware(), function(req, res){
-router.get('/adminpage', function(req, res){
+router.get('/adminpage', authenticationMiddleware(), function(req, res){
+//router.get('/adminpage', function(req, res){
 	db.query("SELECT * FROM taboo_words;", (error, results) => {
     if(error) throw error;
     words = results;
