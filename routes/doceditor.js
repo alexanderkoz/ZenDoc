@@ -1,13 +1,10 @@
-
-module.exports = function(db) {
-
 function saveToFile()
 {
   var text = document.getElementById("inputText").value;
   var textBlob = new Blob([text], {type:"text/plain"});
   var textUrl = window.URL.createObjectURL(textBlob);
   var fileName = document.getElementById("fileName").value;
-
+  console.log(fileName);
   var link = document.createElement("a");
   link.download = fileName;
   link.innerHTML = "Download";
@@ -17,6 +14,17 @@ function saveToFile()
   document.body.appendChild(link);
 
   link.click();
+
+  fetch('/savedoc', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }, 
+    body: JSON.stringify({file_name: fileName})})
+    .then(response => {
+      alert("File saved")
+    })
 }
 
 function destroyElement(e)
@@ -38,13 +46,12 @@ function loadFromFile()
 }
 
 //Taboo words
-/*
+
 function tabooReplace()
 {
-  db.query("SELECT word FROM taboo_words;", (err,results,next) =>{
-    if(err) throw err;
-    var tabooWords = results;
-    var text = document.getElementById(inputText).value;
+    var tabooWords = ['one', 'two', 'three', 'four'];
+    //var tabooWords = results;
+    var text = document.getElementById('inputText').value;
     for(i =0; i<tabooWords.length;i++)
     {
       if(text==tabooWords[i])
@@ -53,8 +60,7 @@ function tabooReplace()
           document.getElementById('inputText').value = replaceWord;
       }
     }
-  });
+}
 
-}
-}
-*/
+
+

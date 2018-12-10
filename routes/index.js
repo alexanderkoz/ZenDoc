@@ -4,6 +4,7 @@ var expressValidator = require('express-validator');
 var passport = require('passport');
 var mysql = require('../db');
 var doc = require('./doc');
+let fs = require('fs');
 module.exports = function(db) {
   /* GET home page. */
 
@@ -12,7 +13,7 @@ router.get('/', function(req, res){
     if(error) throw error;
 
     files = results.map(function(item) {
-      item.url = "/document/" + item.doc_id
+      item.url = "/doc_editor/" + item.doc_id
       return item;
     })
     res.render('home',{title: 'Zen Doc', files: files.slice(files.length - 3, files.length)});
@@ -25,7 +26,7 @@ router.get('/documents', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
     if(error) throw error;
     files = results.map(function(item) {
-      item.url = "/document/" + item.doc_id
+      item.url = "/doc_editor/" + item.doc_id
       return item;
     })
     res.json(files);
@@ -44,18 +45,18 @@ router.get('/users', function(req, res){
 });
 
 router.get('/profile', authenticationMiddleware(), function(req, res){
-//router.get('/profile/', function(req, res){
-	var user = {
-		id: 11,
-		first_name: "Bob",
-		last_name: "Bobby",
-		email: "bob@mail.com",
-		username: "bob",
-		image_name: "boy6.jpg",
-		whyOU: "Idk what to say"
-	}
-	res.render('profile',{title:'profile', user:user});
-	
+//router.get('/profile', function(req, res){
+	res.render('profile', {user: req.user});
+	console.log('in profile');
+	console.log(req.user);
+})
+
+router.get('/taboowords', function(req, res){
+  db.query("SELECT * FROM taboo_words;", (error, results) => {
+    if(error) throw error;
+    words = results
+    res.json(words);
+    });
 });
 
 router.get('/document/:id', function(req, res) {
@@ -74,12 +75,39 @@ router.get('/user/:id', function(req, res) {
 		var user = results[0];
 		db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
 			if(error) throw error;
-			var docs = results;
+			//var docs = results;
+			files = results.map(function(item) {
+				item.url = "/doc_editor/" + item.doc_id
+				return item;
+			});
 			console.log(user);
-			res.render('user', {title: 'UserPage', user:user, docs:docs});
+			res.render('user', {title: 'UserPage', user:user, files:files});
 		});
   });
 });
+
+router.get('/doc_editor/:id', function(req, res) {
+  var id = req.params.id;
+  db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
+    if(error) throw error;
+		file = results;
+    fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
+			if(error) throw error;
+			res.render('doceditor2', {title: 'DocPage', file:results[0], contents});
+			}); 
+  	});
+});
+
+router.post('/savedoc', function(req, res) {
+	const file_name = req.body.file_name;
+	const file_path = '../../../../Downloads/';
+	const user_id = 3;
+	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
+		if (err) throw err;
+		res.send();
+	});
+});
+
 
 router.get('/login',function(req, res){
   res.render('login', {title: 'Login'});
@@ -129,7 +157,7 @@ router.delete('/applications/:id', function(req, res){
 	var id = req.params.id;
   db.query("DELETE FROM users_application WHERE id = " + id, (error) => {
 		if(error) throw error;
-		res.send(); 
+		res.send();
 	});
 });
 
@@ -139,8 +167,8 @@ router.get('/applications/:id', function(req, res) {
 		if(error) throw error;
 		db.query(`DELETE FROM users_application WHERE id = ${id};`, (error) => {
 			if(error) throw error;
-			res.send(); 
-		})	
+			res.send();
+		})
 	})
 })
 
@@ -157,20 +185,23 @@ router.get('/complaints', function(req, res){
 						complaints[i].first_name = names[j].first_name;
 						complaints[i].last_name = names[j].last_name;
 					}
-				} 
+				}
 			}
 			res.render('complaints', {title: 'Complaints', complaints:complaints});
 		})
-	
+
   });
 });
 
-router.post('/login', passport.authenticate(
-  'local',{
-    successRedirect: '/profile',
-    failureRedirect: '/login'
-
-}));
+router.post('/login', function(req, res, next) {
+	passport.authenticate('local', function(err, user, info) {
+		if (err) res.redirect('/login');
+		req.logIn(user, function(err) {
+			if (err) res.redirect('/login');
+			res.redirect('/profile');
+		})
+	})(req, res, next)
+})
 
 router.post('/adminlogin', passport.authenticate(
   'local',{
@@ -226,11 +257,11 @@ router.post('/complaint_ou', function(req, res, next) {
 		res.render('testpage')
 	});
 
-	router.post('/login', passport.authenticate(
-		'local', {
-			successRedirect: '/profile',
-			failureRedirect: '/login'
-	}));
+	// router.post('/login', passport.authenticate(
+	// 	'local', {
+	// 		successRedirect: '/profile',
+	// 		failureRedirect: '/login'
+	// }));
 
 	router.get('/register', function(req, res, next) {
 		res.render('register', {
@@ -309,7 +340,7 @@ router.post('/complaint_ou', function(req, res, next) {
 
 					const users_id = results[0];
 					console.log("bbb");
-					//console.log(results[0]);
+					console.log(results[0]);
 					req.login(users_id, function(err) {
 						res.redirect('/login');
 
@@ -319,18 +350,18 @@ router.post('/complaint_ou', function(req, res, next) {
 		}
 	});
 
-	passport.serializeUser(function(user_id, done) {
-		done(null, user_id);
+	passport.serializeUser(function(user, done) {
+		done(null, user);
 	});
 
 
-	passport.deserializeUser(function(user_id, done) {
-		done(null, user_id);
+	passport.deserializeUser(function(user, done) {
+		done(null, user);
 	});
 
 	function authenticationMiddleware() {
 		return (req, res, next) => {
-			console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
+			console.log(`req.session.passport.users: ${JSON.stringify(req.session.passport)}`);
 
 			if (req.isAuthenticated()) return next();
 			res.redirect('/profile')
