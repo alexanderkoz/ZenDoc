@@ -139,32 +139,32 @@ button {
 </style>
 
 <body>
-    <div class="menu">
-        <nav>
-            <ul>
+	<div class="menu">
+		<nav>
+			<ul>
                 <li><a href="./adminpage">Admin Page</a></li>
-                <li><a href="./doc_editor">Create New Document</a></li>
-                <li><a href="#">Create Complaints</a>
-                    <ul>
-                        <li><a href="./complaintou">Complaint About Ordinary User</a></li>
-                        <li><a href="./complaintdoc">Complaint About Documents</a></li>
-                    </ul>
-                </li>
+				<li><a href="./doc_editor">Create New Document</a></li>
+				<li><a href="#">Create Complaints</a>
+					<ul>
+						<li><a href="./complaintou">Complaint About Ordinary User</a></li>
+						<li><a href="./complaintdoc">Complaint About Documents</a></li>
+					</ul>
+				</li>
                 <li><a href="#">Resolve complaints</a>
-                    <ul>
-                            <li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
-                            <li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
-                    </ul>
-                </li>
+					<ul>
+							<li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
+							<li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
+					</ul>
+				</li>
                 <li><a href="./applications">Applications</a></li>
-                <li><a href="./alldocumentsadmin">All Documents</a></li>
-                <li><a href="./register">Apply To Be OU</a></li>
+				<li><a href="./alldocumentsadmin">All Documents</a></li>
+				<li><a href="./register">Apply To Be OU</a></li>
                 <li><a href="/logout">Logout</a></li>
-            </ul>
-        </nav>
+			</ul>
+		</nav>
 	</div>
 	<section></section>
-	<h2>Approve or Deny Applications</h2>
+    <h2>Here you can change the status of the user</h2>
     <div class="users-wrapper">
         {{#each users}}	
             <div class="main-div  clearfix" data-user-id={{this.id}}>
@@ -179,8 +179,8 @@ button {
                     Reason: {{this.whyOU}}
                 </div>
                 <div class="buttons-wrapper"> 
-                    <button class="approve-button" id="green" data-id={{this.id}}>Approve</button>
-                    <button class="deny-button" id="red" data-id={{this.id}} data-action="deny">Deny</button>
+                    {{!-- <button class="approve-button" id="green" data-id={{this.id}}>Approve</button> --}}
+                    <button class="deny-button" id="red" data-id={{this.id}} data-action="deny">Delete</button>
                 </div>
             </div>		
         {{/each}}
@@ -202,12 +202,12 @@ button {
 
     function denyHandler(target, parent) {
         var userId = target.getAttribute("data-id");
-        fetch(`/applications/${userId}`, {
+        fetch(`/user/${userId}`, {
             method: "delete"
         })
         .then(response => {
             parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
-            alert("Applicant was removed!") 
+            alert("The user is guest user now!") 
         })
         .catch((err) => {
             console.log(err.message);
@@ -229,4 +229,5 @@ button {
     }
 
 </script>
+</body>
 </html>

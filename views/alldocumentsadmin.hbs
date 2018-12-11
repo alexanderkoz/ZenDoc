@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+    </head>
+    <style>
+
+    html { width: 100%; height:100%; overflow:hidden; }
+
+    body{
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background: #092756;
+        background: linear-gradient(#8b9da9, #fff6e4);
+    }
+
+    .menu{
+	position: absolute;
+	width: 100%;
+	background: rgba(255,255,255,.5);
+	padding: 0 100px;
+	box-sizing: border-box;
+	border-bottom: 1px solid rgba(0,0,0,.2)
+    }
+
+    .menu img{
+        float: left;
+        width: 84px;
+        border-radius:20px
+    }
+
+    nav{
+        position: relative;
+        float: right;
+    }
+
+    nav ul{
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    nav ul li{
+        list-style: none;
+    }
+
+    nav ul li a{
+        display: block;
+        color:#000;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: 14px 20px;
+    }
+
+    nav ul li a:hover{
+        background: #184771;
+        color: #fff;
+    }
+
+    nav ul li ul{
+        display: block;
+        background: rgba(255,255,255,.5);
+        min-width:250px;
+        position: absolute;
+        margin-top: 1px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: .5s;
+        transform: translateY(40px);
+    }
+
+    nav ul li:hover ul{
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0px);
+    }
+
+    nav ul li ul a{
+        padding: 10px;
+    }
+
+    section {
+        height: 50px;
+    }
+
+    .clearfix:after {
+        content: '';
+        visibility: hidden;
+        display: block;
+        clear: both;
+        height: 0;
+    }
+
+    .doc-info {
+        float: left;
+        min-width: 350px;
+        margin-left: 20px;
+    }
+
+    .main-div {
+        margin-bottom: 20px;
+        margin-left: 70px;
+    }
+
+    .main-div:last-child {
+        margin-bottom: 0;
+    }
+
+    .main-div:first-child {
+        margin-top: 40px;
+    }
+
+    h2 {
+        margin-left: 30px;
+    }
+
+    button {
+        width: 100px;
+        height: 25px;
+        font-size: 18px;
+        border: none;
+        color: white;
+    }
+
+    #red {
+        background-color: darkred;
+    }
+
+    #green {
+        background-color: darkgreen;
+    }
+
+    a:link {
+    color: black;
+    text-decoration: none;
+    }
+
+    /* visited link */
+    a:visited {
+    color: black;
+    }
+
+    /* mouse over link */
+    a:hover {
+    color: darkgray;
+    }
+
+    /* selected link */
+    a:active {
+    color: black;
+    }
+
+    </style>
+
+    <body>
+        <div class="menu">
+            <nav>
+                <ul>
+                    <li><a href="./adminpage">Admin Page</a></li>
+                    <li><a href="./doc_editor">Create New Document</a></li>
+                    <li><a href="#">Create Complaints</a>
+                        <ul>
+                            <li><a href="./complaintou">Complaint About Ordinary User</a></li>
+                            <li><a href="./complaintdoc">Complaint About Documents</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Resolve complaints</a>
+                        <ul>
+                                <li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
+                                <li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="./applications">Applications</a></li>
+                    <li><a href="./alldocumentsadmin">All Documents</a></li>
+                    <li><a href="./register">Apply To Be OU</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+	    </div>
+        <section></section>
+        <h2>Here is the list of all documents</h2>
+        <div>
+            <div class="files-wrapper">
+                {{#each files}}	
+                    <div class="main-div clearfix" data-file-id={{this.doc_id}}>
+                        <div class="doc-info">
+                            <a class="unlocked-variant" href={{this.url}}>
+                                <p class="info">{{this.file_name}}</p>
+                            </a>
+                            {{!-- <p class="info locked-variant">{{this.file_name}}</p> --}}
+                        </div>
+                        <div> 
+                            <button class="unlock-button" id="green" data-unlock="true" data-id={{this.doc_id}}>Unlock</button>
+                            <button class="lock-button" id="red" data-unlock="false" data-id={{this.doc_id}}>Lock</button>
+                        </div>
+                    </div>		
+                {{/each}}
+            </div>
+        </div>
+    </body>
+    <script>
+        {{!-- var filesWrappers = document.querySelector(".files-wrapper");
+
+        filesWrappers.addEventListener("click", handler);
+
+        function handler(event) {
+            var target = event.target;
+            if (target.getAttribute("data-unlock") === "true") {
+                unlockHandler(target, this);
+                return;
+            }
+            approveHandler(target, this);
+        }
+
+        function unlockHandler(target, parent) {
+            var fileId = target.getAttribute("data-id");
+            fetch(`/applications/${userId}`, {
+                method: "delete"
+            })
+            .then(response => {
+                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+                alert("Applicant was removed!") 
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })  
+        }
+
+        function approveHandler(target, parent) {
+            var userId = target.getAttribute("data-id");
+            fetch(`/applications/${userId}`, {
+                method: "get"
+            })
+            .then(response => {
+                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+                alert("Applicant was added!")  
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })  
+    } --}}
+    </script>
+</html>
