@@ -151,10 +151,10 @@ button {
 					<p class="info">{{this.word}}</p>
 				{{/each}}
 			</div>
-			<div class="complaints" style="width: 20%; float:left">
+			<div class="complaints" id="complaints"style="width: 20%; float:left">
 				<h2>Current Complaints</h2>
 				{{#each complaints}}	
-					<div data-comp-id={{this.comp_id}}>
+					<div class="complaint-holder" data-comp-id={{this.comp_id}}>
 						<p class="info">Complaint content: {{this.comment_text}}</p>
 						<p class="info">Type of complaint: {{this.complaint_type}}</p>
 						{{#if this.file_name}}	
@@ -162,8 +162,8 @@ button {
 						{{else }}
 						<p class="info">User name: {{this.first_name}} {{this.last_name}}</p>
 						{{/if}}			   
-					</div>
-					{{!-- <button id="resolved" data-id={{this.comp_id}}>Resolved</button>		 --}}
+					<button id="resolved" data-id={{this.comp_id}}>Resolved</button>
+					</div>		
 				{{/each}}
 			</div>
 		</div>
@@ -176,22 +176,21 @@ button {
 	
 </body>
 <script>
-	document.getElementById("resolved").addEventListener("click", function(){
-    	var compId = target.getAttribute("data-id");
+	document.getElementById("complaints").addEventListener("click", function(event){
+    	var compId = event.target.getAttribute("data-id");
 		fetch(`/complaints/${compId}`, {
             method: "delete",
 			headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
-		}
+		}})
     	.then(response => {
-            parent.querySelector(`div[data-comp-id="${compId}"]`).remove(); 
-            alert("Thank you for resolving the conflict") 
+            this.querySelector(`div[data-comp-id="${compId}"]`).remove(); 
+            alert("Thank you for resolving the conflict!") 
         })
         .catch((err) => {
             console.log(err.message);
         })
-		})
 	})
 
 </script>
