@@ -1,3 +1,15 @@
+var tabooWords = [];
+fetch("/taboowords")
+.then(response => response.json())
+.then(response => {
+  tabooWords = response;
+  applyTabooWords(tabooWords);
+  //console.log(tabooWords);
+})
+.catch(err => {
+	tabooWords = [];
+})
+
 function saveToFile()
 {
   var text = document.getElementById("inputText").value;
@@ -45,21 +57,47 @@ function loadFromFile()
   fileReader.readAsText(fileLoad, "UTF-8");
 }
 
-//Taboo words
+// //Taboo words
 
-function tabooReplace()
-{
-    var tabooWords = ['one', 'two', 'three', 'four'];
-    //var tabooWords = results;
-    var text = document.getElementById('inputText').value;
-    for(i =0; i<tabooWords.length;i++)
-    {
-      if(text==tabooWords[i])
-      {
-          var replaceWord = text.replace(new RegExp(tabooWords[i], "g"), "UNK");
-          document.getElementById('inputText').value = replaceWord;
-      }
+// function tabooReplace()
+// {
+//     var tabooWords = ['one', 'two', 'three', 'four'];
+//     //var tabooWords = results;
+//     var text = document.getElementById('inputText').value;
+//     for(i =0; i<tabooWords.length;i++)
+//     {
+//       if(text==tabooWords[i])
+//       {
+//           var replaceWord = text.replace(new RegExp(tabooWords[i], "g"), "UNK");
+//           document.getElementById('inputText').value = replaceWord;
+//       }
+//     }
+// }
+function applyTabooWords(words) {
+  var index = 0;
+  //var words = ['apple', 'fat', 'fuck'];
+  if (!words.length) {
+    return 
+  }
+  var regExpString = words.reduce(function (prev, current) {
+      return `${prev}|${current.word}`;
+  }, '/') + '|/';
+  regExpString = new RegExp(regExpString, 'g');
+
+  document.getElementById('inputText').addEventListener('keyup', function (event) {
+    var value = this.value;
+    if (event.keyCode === 8 && index > 0) {
+      index--;
     }
+    var valueToValidate = value.slice(index, value.length);
+    var validatedValue = valueToValidate.replace(regExpString, 'UNK');
+    if (valueToValidate === validatedValue) {
+      return;
+    }
+    var result = value.substr(0, index) + validatedValue;
+    index = result.length;
+    this.value = result;
+  })
 }
 
 
