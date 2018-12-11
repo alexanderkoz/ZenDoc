@@ -15,6 +15,76 @@ body{
     background: linear-gradient(#8b9da9, #fff6e4);
 }
 
+.menu{
+	position: absolute;
+	width: 100%;
+	background: rgba(255,255,255,.5);
+	padding: 0 100px;
+	box-sizing: border-box;
+	border-bottom: 1px solid rgba(0,0,0,.2)
+}
+
+.menu img{
+	float: left;
+	width: 84px;
+    border-radius:20px
+}
+
+nav{
+	position: relative;
+	float: right;
+}
+
+nav ul{
+	margin: 0;
+	padding: 0;
+	display: flex;
+}
+
+nav ul li{
+	list-style: none;
+}
+
+nav ul li a{
+	display: block;
+	color:#000;
+	text-decoration: none;
+	text-transform: uppercase;
+	padding: 14px 20px;
+}
+
+nav ul li a:hover{
+	background: #184771;
+	color: #fff;
+}
+
+nav ul li ul{
+	display: block;
+	background: rgba(255,255,255,.5);
+	min-width:250px;
+	position: absolute;
+	margin-top: 1px;
+	box-shadow: 0 2px 5px rgba(0,0,0,.5);
+	opacity: 0;
+	visibility: hidden;
+	transition: .5s;
+	transform: translateY(40px);
+}
+
+nav ul li:hover ul{
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0px);
+}
+
+nav ul li ul a{
+	padding: 10px;
+}
+
+section {
+	height: 50px;
+}
+
 .clearfix:after {
     content: '';
     visibility: hidden;
@@ -69,6 +139,31 @@ button {
 </style>
 
 <body>
+    <div class="menu">
+        <nav>
+            <ul>
+                <li><a href="./adminpage">Admin Page</a></li>
+                <li><a href="./doc_editor">Create New Document</a></li>
+                <li><a href="#">Create Complaints</a>
+                    <ul>
+                        <li><a href="./complaintou">Complaint About Ordinary User</a></li>
+                        <li><a href="./complaintdoc">Complaint About Documents</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Resolve complaints</a>
+                    <ul>
+                            <li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
+                            <li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
+                    </ul>
+                </li>
+                <li><a href="./applications">Applications</a></li>
+                <li><a href="./alldocumentsadmin">All Documents</a></li>
+                <li><a href="./register">Apply To Be OU</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+	</div>
+	<section></section>
 	<h2>Approve or Deny Applications</h2>
     <div class="users-wrapper">
         {{#each users}}	

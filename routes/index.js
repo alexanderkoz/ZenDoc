@@ -44,14 +44,14 @@ router.get('/alldocuments', function(req, res){
     });
 });
 
-router.get('/alldocuments2', function(req, res){
+router.get('/alldocumentsadmin', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
     if(error) throw error;
     files = results.map(function(item) {
       item.url = "/doc_editor/" + item.doc_id
       return item;
     })
-    res.render('alldocuments2', {title: 'All Documents', files:files});
+    res.render('alldocumentsadmin', {title: 'All Documents', files:files});
     });
 });
 
@@ -113,15 +113,21 @@ router.get('/user/:id', function(req, res) {
 		var user = results[0];
 		db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
 			if(error) throw error;
-			//var docs = results;
 			files = results.map(function(item) {
 				item.url = "/doc_editor/" + item.doc_id
 				return item;
 			});
-			console.log(user);
 			res.render('user', {title: 'UserPage', user:user, files:files});
 		});
   });
+});
+
+router.delete('/user/:id', function(req, res){
+	var id = req.params.id;
+  db.query("DELETE FROM users WHERE id = " + id, (error) => {
+		if(error) throw error;
+		res.send();
+	});
 });
 
 router.get('/doc_editor/:id', function(req, res) {
@@ -184,10 +190,6 @@ router.get('/complaintou', function(req, res){
   res.render('complaintou')
 });
 
-router.get('/resolveou', function(req, res){
-  res.render('resolveou', {title: 'Resolve Complaints'});
-});
-
 router.get('/resolvedoc', function(req, res){
   res.render('resolvedoc', {title: 'Resolve Complaints'});
 });
@@ -197,12 +199,35 @@ router.get('/testpage', function(req, res){
 });
 
 router.get('/adminpage', authenticationMiddleware(), function(req, res){
-//router.get('/adminpage', function(req, res){
-	db.query("SELECT * FROM taboo_words;", (error, results) => {
+  db.query("SELECT * FROM complaints;", (error, results) => {
+		if(error) throw error;
+		var complaints = results;
+		db.query("SELECT users.id, users.first_name, users.last_name from users INNER JOIN complaints ON users.id=complaints.user_id;", (error, results) => {
+			if(error) throw error;
+			var names = results;
+			for (var i = 0; i < complaints.length; i++) {
+				for (var j = 0; j < names.length; j++) {
+					if (complaints[i].user_id === names[j].id) {
+						complaints[i].first_name = names[j].first_name;
+						complaints[i].last_name = names[j].last_name;
+					}
+				}
+			}
+			db.query("SELECT * FROM taboo_words;", (error, results) => {
+				if(error) throw error;
+				words = results;
+				res.render('adminpage', {title: 'AdminPage', words: words, complaints: complaints, user: req.user});
+			});
+		});
+  });
+});
+
+router.get('/resolveou', function(req, res){
+  db.query("SELECT * FROM users;", (error, results) => {
     if(error) throw error;
-    words = results;
-	res.render('adminpage', {title: 'AdminPage', words: words});
-	});
+		users = results;
+    res.render('resolveou', {title: 'Resolve Complaints', users:users});
+  });
 });
 
 router.get('/applications', function(req, res){
@@ -221,6 +246,14 @@ router.delete('/applications/:id', function(req, res){
 	});
 });
 
+router.delete('/complaints/:id', function(req, res){
+	var id = req.params.id;
+  db.query("DELETE FROM complaints WHERE comp_id = " + id, (error) => {
+		if(error) throw error;
+		res.send();
+	});
+});
+
 router.get('/applications/:id', function(req, res) {
 	var id = req.params.id;
 	db.query(`INSERT INTO users SELECT * FROM users_application WHERE id = ${id};`, (error) => {
@@ -231,27 +264,6 @@ router.get('/applications/:id', function(req, res) {
 		})
 	})
 })
-
-router.get('/complaints', function(req, res){
-  db.query("SELECT * FROM complaints;", (error, results) => {
-		if(error) throw error;
-		var complaints = results;
-		db.query("SELECT users.id, users.first_name, users.last_name from users INNER JOIN complaints ON users.id=complaints.user_id;", (error, results) => {
-			if(error) throw error;
-			var names = results;
-			for (var i = 0; i < complaints.length; i++) {
-				for (var j = 0; j < names.length; j++) {
-					if (complaints[i].user_id === names[j].id) {
-						complaints[i].first_name = names[j].first_name;
-						complaints[i].last_name = names[j].last_name;
-					}
-				}
-			}
-			res.render('complaints', {title: 'Complaints', complaints:complaints});
-		})
-
-  });
-});
 
 router.post('/login', passport.authenticate(
   'local',{

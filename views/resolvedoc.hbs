@@ -85,6 +85,28 @@ section {
 	height: 50px;
 }
 
+.main-div {
+    text-align: center;
+    margin: 40px;
+    font-size: 20px;
+}
+
+#word {
+    width: 300px;
+    height: 25px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+button {
+    width: 130px;
+    height: 25px;
+    font-size: 16px;
+    background-color: #5E5D5B;
+    border: none;
+    color: white;
+
+}
 
 </style>
 
@@ -92,6 +114,7 @@ section {
 	<div class="menu">
 		<nav>
 			<ul>
+                <li><a href="./adminpage">Admin Page</a></li>
 				<li><a href="./doc_editor">Create New Document</a></li>
 				<li><a href="#">Create Complaints</a>
 					<ul>
@@ -99,21 +122,76 @@ section {
 						<li><a href="./complaintdoc">Complaint About Documents</a></li>
 					</ul>
 				</li>
-                <li><a href="./complaints">Resolve complaints</a>
+                <li><a href="#">Resolve complaints</a>
 					<ul>
 							<li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
 							<li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
 					</ul>
 				</li>
                 <li><a href="./applications">Applications</a></li>
-				<li><a href="./alldocuments2">All Documents</a></li>
-				<li><a href="./login">Sign in</a></li>
-				<li><a href="./register">Apply To Be OU</a>
-					</li>
+				<li><a href="./alldocumentsadmin">All Documents</a></li>
+				<li><a href="./register">Apply To Be OU</a></li>
+                <li><a href="/logout">Logout</a></li>
 			</ul>
 		</nav>
 	</div>
 	<section></section>
+    <div class="main-div">
+        <h3>Enter a taboo word you want to add or delete</h3>
+        <div class="sub-div">
+            <input type="text" name="word" id="word">
+            </br>
+            <button id="add">Add</button>
+            <button id="delete">Delete</button>
+        </div>
+    </div>
 	
 </body>
+
+<script>
+	{{!-- var wordsJson = document.getElementById("words-container").getAttribute("data-words");
+	var words = JSON.parse(wordsJson);
+	var wordsContainer = document.querySelector(".taboo-wrapper");
+	var templateSource = document.getElementById("what-template").innerHTML;
+	console.log(templateSource);
+	var template = Handlebars.compile(templateSource);
+	function generateWordsTemplate(words) {
+		var html = template({
+			words:words
+		})
+		console.log(html);
+		wordsContainer.innerHTML = html;
+	}
+	generateWordsTemplate(words);	 --}}
+	
+	document.getElementById("add").addEventListener("click", function(){
+		var tabooWord = document.getElementById("word").value;
+		fetch('/saveword', {
+			method: 'POST',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}, 
+    	body: JSON.stringify({word: tabooWord})})
+    	.then(response => {
+      	alert("Taboo word is successfully added!")
+    	})
+	});
+
+	document.getElementById("delete").addEventListener("click", function(){
+    	var tabooWord = document.getElementById("word").value;
+		fetch('/deleteword', {
+			method: 'DELETE',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}, 
+    	body: JSON.stringify({word: tabooWord.trim()})})
+    	.then(response => {
+      	alert("Taboo word is successfully deleted!")
+    	})
+	});
+
+</script>
+
 </html>

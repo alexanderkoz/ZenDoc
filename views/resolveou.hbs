@@ -85,6 +85,56 @@ section {
 	height: 50px;
 }
 
+.clearfix:after {
+    content: '';
+    visibility: hidden;
+    display: block;
+    clear: both;
+    height: 0;
+}
+
+.user-pict {
+    float: left;
+}
+
+.user-info {
+    float: left;
+    min-width: 350px;
+    margin-left: 20px;
+}
+
+.main-div {
+    margin-bottom: 20px;
+    margin-left: 70px;
+}
+
+.main-div:last-child {
+    margin-bottom: 0;
+}
+
+.main-div:first-child {
+    margin-top: 40px;
+}
+
+h2 {
+    margin-left: 30px;
+}
+
+button {
+    width: 100px;
+    height: 25px;
+    font-size: 18px;
+    border: none;
+    color: white;
+}
+
+#red {
+    background-color: darkred;
+}
+
+#green {
+    background-color: darkgreen;
+}
 
 </style>
 
@@ -92,6 +142,7 @@ section {
 	<div class="menu">
 		<nav>
 			<ul>
+                <li><a href="./adminpage">Admin Page</a></li>
 				<li><a href="./doc_editor">Create New Document</a></li>
 				<li><a href="#">Create Complaints</a>
 					<ul>
@@ -99,20 +150,84 @@ section {
 						<li><a href="./complaintdoc">Complaint About Documents</a></li>
 					</ul>
 				</li>
-                <li><a href="./complaints">Resolve complaints</a>
+                <li><a href="#">Resolve complaints</a>
 					<ul>
 							<li><a href="./resolveou">Resolve Complaints About Ordinary User</a></li>
 							<li><a href="./resolvedoc">Resolve Complaints About Documents</a></li>
 					</ul>
 				</li>
                 <li><a href="./applications">Applications</a></li>
-				<li><a href="./alldocuments2">All Documents</a></li>
-				<li><a href="./login">Sign in</a></li>
-				<li><a href="./register">Apply To Be OU</a>
-					</li>
+				<li><a href="./alldocumentsadmin">All Documents</a></li>
+				<li><a href="./register">Apply To Be OU</a></li>
+                <li><a href="/logout">Logout</a></li>
 			</ul>
 		</nav>
 	</div>
 	<section></section>
+    <h2>Here you can change the status of the user</h2>
+    <div class="users-wrapper">
+        {{#each users}}	
+            <div class="main-div  clearfix" data-user-id={{this.id}}>
+                <div class="user-pict">
+                    <img height="100" width="100" src="images/{{this.image_name}}">
+                </div>
+                <div class="user-info">
+                    Name: {{this.first_name}} {{this.last_name}}
+                    </br>
+                    Email: {{this.email}}	
+                    </br>
+                    Reason: {{this.whyOU}}
+                </div>
+                <div class="buttons-wrapper"> 
+                    {{!-- <button class="approve-button" id="green" data-id={{this.id}}>Approve</button> --}}
+                    <button class="deny-button" id="red" data-id={{this.id}} data-action="deny">Delete</button>
+                </div>
+            </div>		
+        {{/each}}
+    </div>
+</body>
+<script>
+    var usersWrappers = document.querySelector(".users-wrapper");
+
+    usersWrappers.addEventListener("click", handler);
+
+    function handler(event) {
+        var target = event.target;
+        if (target.getAttribute("data-action") === "deny") {
+            denyHandler(target, this);
+            return;
+        }
+        approveHandler(target, this);
+    }
+
+    function denyHandler(target, parent) {
+        var userId = target.getAttribute("data-id");
+        fetch(`/user/${userId}`, {
+            method: "delete"
+        })
+        .then(response => {
+            parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+            alert("The user is guest user now!") 
+        })
+        .catch((err) => {
+            console.log(err.message);
+        })  
+    }
+
+    function approveHandler(target, parent) {
+        var userId = target.getAttribute("data-id");
+        fetch(`/applications/${userId}`, {
+            method: "get"
+        })
+        .then(response => {
+            parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+            alert("Applicant was added!")  
+        })
+        .catch((err) => {
+            console.log(err.message);
+        })  
+    }
+
+</script>
 </body>
 </html>
