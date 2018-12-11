@@ -85,13 +85,6 @@ section {
 	height: 50px;
 }
 
-.info {
-	margin: 0 auto;
-}
-
-.main-div {
-	margin-left: 30px;
-}
 
 </style>
 
@@ -121,66 +114,5 @@ section {
 		</nav>
 	</div>
 	<section></section>
-	<div class="main-div">
-		<h1>Welcome to Administrative Page</h1>
-		<h2>Maintain Taboo Words</h2>
-		<h3>Here is the list of taboo words</h3>
-		{{#each words}}
-			<p class="info">{{this.word}}</p>
-		{{/each}}
-		<h3>Enter a taboo word you want to add or delete</h3>
-		<input type="text" name="word" id="word">
-		</br>
-		<button id="add">Add</button>
-		<button id="delete">Delete</button>
-	</div>
-	
 </body>
-
-<script>
-	{{!-- var wordsJson = document.getElementById("words-container").getAttribute("data-words");
-	var words = JSON.parse(wordsJson);
-	var wordsContainer = document.querySelector(".taboo-wrapper");
-	var templateSource = document.getElementById("what-template").innerHTML;
-	console.log(templateSource);
-	var template = Handlebars.compile(templateSource);
-	function generateWordsTemplate(words) {
-		var html = template({
-			words:words
-		})
-		console.log(html);
-		wordsContainer.innerHTML = html;
-	}
-	generateWordsTemplate(words);	 --}}
-	
-	document.getElementById("add").addEventListener("click", function(){
-		var tabooWord = document.getElementById("word").value;
-		fetch('/saveword', {
-			method: 'POST',
-			headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}, 
-    	body: JSON.stringify({word: tabooWord})})
-    	.then(response => {
-      	alert("Taboo word is successfully added!")
-    	})
-	});
-
-	document.getElementById("delete").addEventListener("click", function(){
-    	var tabooWord = document.getElementById("word").value;
-		fetch('/deleteword', {
-			method: 'DELETE',
-			headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}, 
-    	body: JSON.stringify({word: tabooWord.trim()})})
-    	.then(response => {
-      	alert("Taboo word is successfully deleted!")
-    	})
-	});
-
-</script>
-
 </html>

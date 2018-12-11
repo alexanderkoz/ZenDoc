@@ -96,6 +96,16 @@ router.get('/document/:id', function(req, res) {
   });
 });
 
+// router.post('/document/:id', function(req, res) {
+// 	var id = req.params.id;
+// 	var value = 
+//   db.query(`UPDATE documents SET locked = ${value} WHERE condition;`, (error, results) => {
+//     if(error) throw error;
+//     file = results;
+//     res.render('doc', {title: 'Document', file:results[0]});
+//   });
+// });
+
 router.get('/user/:id', function(req, res) {
   var id = req.params.id;
   db.query("SELECT * FROM users where id = " + id, (error, results) => {
@@ -174,6 +184,14 @@ router.get('/complaintou', function(req, res){
   res.render('complaintou')
 });
 
+router.get('/resolveou', function(req, res){
+  res.render('resolveou', {title: 'Resolve Complaints'});
+});
+
+router.get('/resolvedoc', function(req, res){
+  res.render('resolvedoc', {title: 'Resolve Complaints'});
+});
+
 router.get('/testpage', function(req, res){
   res.render('testpage')
 });
@@ -235,15 +253,11 @@ router.get('/complaints', function(req, res){
   });
 });
 
-router.post('/login', function(req, res, next) {
-	passport.authenticate('local', function(err, user, info) {
-		if (err) res.redirect('/login');
-		req.logIn(user, function(err) {
-			if (err) res.redirect('/login');
-			res.redirect('/profile');
-		})
-	})(req, res, next)
-})
+router.post('/login', passport.authenticate(
+  'local',{
+    successRedirect: '/profile',
+    failureRedirect: '/'
+}));
 
 router.post('/adminlogin', passport.authenticate(
   'local',{
@@ -342,19 +356,18 @@ router.post('/complaint_ou', function(req, res, next) {
 		});
 	});
 
-	// router.get('/deleteword', function(req, res){
-	// 	db.query("SELECT * FROM taboo_words;", (err, results) => {
-	// 		if(err) throw error;
-	// 		res.json(results);
-	// 		for (var i = 0; i < results.length; i++) {
-	// 			db.query("DELETE FROM taboo_words WHERE word = " + , (error) => {
-	// 				if(error) throw error;
-	// 				res.send();
-	// 			});
-	// 			console.log(results[i].word);
-	// 		}
-	// 	});
-	// });
+	router.delete('/deleteword', function(req, res){
+		var str = req.body.word;
+		console.log(str);
+		db.query("SELECT taboo_id FROM taboo_words WHERE word =?;", [str], (err, results, fields) => {
+			if (err) throw err;
+			var id = results[0].taboo_id;
+			db.query("DELETE FROM taboo_words WHERE taboo_id = " + id, (error) => {
+				if(error) throw error
+				res.send();
+			});
+		});
+	});
 
 	router.post('/register', function(req, res, next) {
 		//checn input if its valid

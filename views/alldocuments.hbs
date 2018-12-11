@@ -134,26 +134,70 @@ a:active {
         </style>
     </head>
     <body>
-        <div class="main-div">
+        <div class="main-div" >
             <h2>List of all documents</h2>
            
-            <div class="users-wrapper">
+            <div class="files-wrapper">
                 {{#each files}}	
-                    <div class="main-div  clearfix"}>
+                    <div class="main-div clearfix" data-file-id={{this.doc_id}}>
                         <div class="doc-info">
-                            <a href={{this.url}}>
+                            <a class="unlocked-variant" href={{this.url}}>
                                 <p class="info">{{this.file_name}}</p>
                             </a>
+                            <p class="info locked-variant">{{this.file_name}}</p>
                         </div>
                         <div> 
-                            <button class="unlock-button" id="green">Unlock</button>
-                            <button class="lock-button" id="red">Lock</button>
+                            <button class="unlock-button" id="green" data-unlock="true" data-id={{this.doc_id}}>Unlock</button>
+                            <button class="lock-button" id="red" data-unlock="false" data-id={{this.doc_id}}>Lock</button>
                         </div>
                     </div>		
                 {{/each}}
             </div>
         </div>
     </body>
+    <script>
+        {{!-- var filesWrappers = document.querySelector(".files-wrapper");
+
+        filesWrappers.addEventListener("click", handler);
+
+        function handler(event) {
+            var target = event.target;
+            if (target.getAttribute("data-unlock") === "true") {
+                unlockHandler(target, this);
+                return;
+            }
+            approveHandler(target, this);
+        }
+
+        function unlockHandler(target, parent) {
+            var fileId = target.getAttribute("data-id");
+            fetch(`/applications/${userId}`, {
+                method: "delete"
+            })
+            .then(response => {
+                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+                alert("Applicant was removed!") 
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })  
+        }
+
+        function approveHandler(target, parent) {
+            var userId = target.getAttribute("data-id");
+            fetch(`/applications/${userId}`, {
+                method: "get"
+            })
+            .then(response => {
+                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
+                alert("Applicant was added!")  
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })  
+    } --}}
+
+    </script>
 </html>
 
 
