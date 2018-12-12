@@ -66,8 +66,6 @@ router.get('/alldocumentsadmin', function(req, res){
 			item.locked = !!item.locked;
       return item;
 		})
-		console.log("test");
-		console.log(files[0]);
     res.render('alldocumentsadmin', {title: 'All Documents', files:files});
     });
 });
@@ -84,10 +82,8 @@ router.get('/users', function(req, res){
 });
 
 router.get('/profile', authenticationMiddleware(), function(req, res){
-//router.get('/profile', function(req, res){
 	db.query("SELECT * FROM documents where user_id = " + req.user.id, (error, results) => {
 		if(error) throw error;
-		//var docs = results;
 		files = results.map(function(item) {
 			item.url = "/doc_editor/" + item.doc_id
 			return item;
@@ -104,6 +100,18 @@ router.get('/taboowords', function(req, res){
     });
 });
 
+router.get('/docs/', function(req, res) {
+  var id = req.user.id;
+  db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/doc_editor/" + item.doc_id
+      return item;
+    })
+    res.json(files);
+    });
+});
+
 router.get('/document/:id', function(req, res) {
   var id = req.params.id;
   db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
@@ -112,6 +120,7 @@ router.get('/document/:id', function(req, res) {
     res.render('doc', {title: 'Document', file:results[0]});
   });
 });
+
 
 router.put('/document/:id', function(req, res) {
 	var id = req.params.id;
