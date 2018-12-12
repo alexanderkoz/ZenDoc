@@ -21,7 +21,7 @@ body{
 }
 section{
 	width: 100%;
-	height: 10vh;
+	height: 5vh;
 	background-size: cover;
 }
 .menu{
@@ -87,9 +87,10 @@ nav ul li ul a{
   position: relative;
   width: 490px;
   display: block;
-  margin: 3% auto;
+  margin: 90px;
+  float: left;
 }
-input#search-bar{
+input#search-bar2{
   width: 100%;
   height: 45px;
   padding: 0 20px;
@@ -114,6 +115,33 @@ input#search-bar{
      }
    }
  }
+
+input#search-bar1{
+  width: 100%;
+  height: 45px;
+  padding: 0 20px;
+  font-size: 1rem;
+  border: 1px solid #D0CFCE;
+  outline: none;
+  &:focus{
+    border: 1px solid #008ABF;
+    transition: 0.35s ease;
+    color: #008ABF;
+    &::-webkit-input-placeholder{
+      transition: opacity 0.45s ease;
+  	  opacity: 0;
+     }
+    &::-moz-placeholder {
+      transition: opacity 0.45s ease;
+  	  opacity: 0;
+     }
+    &:-ms-placeholder {
+     transition: opacity 0.45s ease;
+  	 opacity: 0;
+     }
+   }
+ }
+
 .search-icon{
   position: absolute;
   float: right;
@@ -196,16 +224,26 @@ h2 {
 	</div>
   {{!-- {{results.1.first_name}} --}}
 		<section></section>
-		<form class="search-container">
-			<input type="text" id="search-bar" placeholder="What can I help you with today?">
-			<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
-		</form>
-    
-		<div class="image">
-				<img height="200" width="200" src="/images/{{user.image_name}}">
+		<div>
+			<form class="search-container">
+				<input type="text" id="search-bar1" placeholder="Search for documents">
+				<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
+			</form>
+
+			<form class="search-container">
+				<input type="text" id="search-bar2" placeholder="Search for users">
+				<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
+			</form>
 		</div>
+		<section></section>
+    
+		
 
         <div class="main-div">
+			<div class="image">
+				<img height="200" width="200" src="/images/{{user.image_name}}">
+		</div>
+		<div style="float:left">
             <h2>General Information</h2>
         
             <div class="sub-div">
@@ -227,7 +265,9 @@ h2 {
 					</a>
 		    	{{/each}}
             </div>
+			</div>
 	    </div>
+		
     </body>
     <script src="/js/auto-complete.min.js"></script>
 <script>
@@ -241,7 +281,7 @@ h2 {
 		users = [];
 	})
 	new autoComplete({
-    selector: '#search-bar',
+    selector: '#search-bar2',
     minChars: 1,
 	source: function(term, suggest){
         term = term.toLowerCase();
@@ -260,5 +300,36 @@ h2 {
 		window.location.href = value;
     }
 	});
+
+	var files = [];
+	fetch("/docs")
+	.then(response => response.json())
+	.then(response => {
+		files = response;
+	})
+	.catch(err => {
+		files = [];
+	})
+	new autoComplete({
+    selector: '#search-bar1',
+    minChars: 1,
+	source: function(term, suggest){
+        term = term.toLowerCase();
+        var matches = [];
+        for (i=0; i<files.length; i++)
+            if (~files[i].file_name.toLowerCase().indexOf(term)) matches.push(files[i]);
+        suggest(matches);
+    },
+	renderItem: function (item, search){
+        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+        return '<div class="autocomplete-suggestion" data-url="'+item.url+'" > '+item.file_name+'</div>';
+    },
+    onSelect: function(e, term, item){
+        var value = item.getAttribute("data-url");
+		window.location.href = value;
+    }
+	});
+
 </script>
 </html>
