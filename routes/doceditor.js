@@ -32,7 +32,7 @@ function saveToFile()
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
-    }, 
+    },
     body: JSON.stringify({file_name: fileName})})
     .then(response => {
       alert("File successfully saved!")
@@ -75,9 +75,9 @@ function loadFromFile()
 // }
 function applyTabooWords(words) {
   var index = 0;
-  //var words = ['apple', 'fat', 'fuck'];
+  //var words = ['apple', 'fat'];
   if (!words.length) {
-    return 
+    return
   }
   var regExpString = words.reduce(function (prev, current) {
       return `${prev}|${current.word}`;
@@ -99,6 +99,3 @@ function applyTabooWords(words) {
     this.value = result;
   })
 }
-
-
-

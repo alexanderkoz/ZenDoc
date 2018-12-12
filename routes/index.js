@@ -47,6 +47,20 @@ router.get('/documents', function(req, res){
     });
 });
 
+//User access to documents
+
+router.post('/private', function(req,res)
+{
+	const private = req.body.status;
+	db.query("INSERT INTO documents (status) VALUSE (?);", [private], (error, results) => {
+			if(error) throw error;
+			res.send()
+	});
+});
+
+
+
+
 router.get('/alldocuments', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
     if(error) throw error;
@@ -112,7 +126,7 @@ router.get('/document/:id', function(req, res) {
 
 // router.post('/document/:id', function(req, res) {
 // 	var id = req.params.id;
-// 	var value = 
+// 	var value =
 //   db.query(`UPDATE documents SET locked = ${value} WHERE condition;`, (error, results) => {
 //     if(error) throw error;
 //     file = results;
@@ -158,8 +172,9 @@ router.get('/doc_editor/:id', function(req, res) {
 
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
-	const file_path = '‎⁨~/⁨Downloads⁩/';
+	const file_path = '‎/⁨Users/alexkozlenko/Downloads/';
 	const user_id = req.user.id;
+	console.log(file_path);
 	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
 		if (err) throw err;
 		res.send();
