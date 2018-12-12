@@ -122,7 +122,7 @@ router.get('/doc_editor/:id', function(req, res) {
     fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
 			if(error) throw error;
 			res.render('doceditor', {title: 'DocPage', file:results[0], contents, user: req.user});
-			}); 
+			});
   	});
 });
 
@@ -235,15 +235,13 @@ router.get('/complaints', function(req, res){
   });
 });
 
-router.post('/login', function(req, res, next) {
-	passport.authenticate('local', function(err, user, info) {
-		if (err) res.redirect('/login');
-		req.logIn(user, function(err) {
-			if (err) res.redirect('/login');
-			res.redirect('/profile');
-		})
-	})(req, res, next)
-})
+
+
+router.post('/login', passport.authenticate(
+  'local',{
+    successRedirect: '/profile',
+    failureRedirect: '/login'
+}));
 
 router.post('/adminlogin', passport.authenticate(
   'local',{

@@ -76,13 +76,13 @@ var express = require('express');
 
   passport.use(new LocalStrategy(
   	function(username, password, done) {
-  		db.query('SELECT * FROM users WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
   			if (results.length == 0) {
   				done(null, false);
-        }  
+        }
         var user = results[0]
         if (user.password !== password) {
           done(null, false);
