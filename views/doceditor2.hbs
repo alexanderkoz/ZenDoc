@@ -2,6 +2,7 @@
 <body>
   <script src="./routes/doceditor.js"></script>
 
+
 <style>
 * {
   font-family:sans-serif;
@@ -319,7 +320,12 @@ hr {
 	font-weight: 700;
 }
 
-
+ button{
+   font-size: 20px
+   position: absolute;
+   top: 240px;
+   left:50%
+ }
 </style>
 
 <h1>{{file.file_name}}</h1>
@@ -336,6 +342,7 @@ hr {
   <input type="file"  id="fileLoad" />
 
   <button onclick="loadFromFile()" class="myButton" > Load </button>
+  <button onclick="startConverting()"class="myButton" > Speech Rcognition </button>
   <select name="" id="" class="dropdown">
       <option class="label">Label</option>
       <option name="Private">Private</option>
@@ -344,6 +351,9 @@ hr {
       <option name="Shared">Shared</option>
       <
   </select>
+
+
+
   </div>
 
 <div class="spacer"></div>
