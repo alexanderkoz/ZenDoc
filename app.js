@@ -82,7 +82,7 @@ var express = require('express');
   			};
   			if (results.length == 0) {
   				done(null, false);
-        }  
+        }
         var user = results[0]
         if (user.password !== password) {
           done(null, false);
