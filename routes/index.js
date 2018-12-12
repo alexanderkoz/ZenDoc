@@ -78,9 +78,10 @@ router.get('/alldocumentsadmin', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
     if(error) throw error;
     files = results.map(function(item) {
-      item.url = "/doc_editor/" + item.doc_id
+			item.url = "/doc_editor/" + item.doc_id;
+			item.locked = !!item.locked;
       return item;
-    })
+		})
     res.render('alldocumentsadmin', {title: 'All Documents', files:files});
     });
 });
@@ -97,10 +98,8 @@ router.get('/users', function(req, res){
 });
 
 router.get('/profile', authenticationMiddleware(), function(req, res){
-//router.get('/profile', function(req, res){
 	db.query("SELECT * FROM documents where user_id = " + req.user.id, (error, results) => {
 		if(error) throw error;
-		//var docs = results;
 		files = results.map(function(item) {
 			item.url = "/doc_editor/" + item.doc_id + "hello"
 			return item;
@@ -117,6 +116,18 @@ router.get('/taboowords', function(req, res){
     });
 });
 
+router.get('/docs/', function(req, res) {
+  var id = req.user.id;
+  db.query("SELECT * FROM documents where user_id = " + id, (error, results) => {
+    if(error) throw error;
+    files = results.map(function(item) {
+      item.url = "/doc_editor/" + item.doc_id
+      return item;
+    })
+    res.json(files);
+    });
+});
+
 router.get('/document/:id', function(req, res) {
   var id = req.params.id;
   db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
@@ -126,15 +137,16 @@ router.get('/document/:id', function(req, res) {
   });
 });
 
-// router.post('/document/:id', function(req, res) {
-// 	var id = req.params.id;
-// 	var value =
-//   db.query(`UPDATE documents SET locked = ${value} WHERE condition;`, (error, results) => {
-//     if(error) throw error;
-//     file = results;
-//     res.render('doc', {title: 'Document', file:results[0]});
-//   });
-// });
+
+router.put('/document/:id', function(req, res) {
+	var id = req.params.id;
+	var value = req.body.value;
+  db.query(`UPDATE documents SET locked = ${value} WHERE doc_id = ${id};`, (error, results) => {
+    if(error) throw error;
+    file = results;
+    res.render('doc', {title: 'Document', file:results[0]});
+  });
+});
 
 router.get('/user/:id', function(req, res) {
   var id = req.params.id;
