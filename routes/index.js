@@ -8,8 +8,9 @@ let fs = require('fs');
 module.exports = function(db) {
   /* GET home page. */
 
+//Added WHERE statement
 router.get('/', function(req, res){
-  db.query("SELECT * FROM documents;", async (error, results) => {
+  db.query("SELECT * FROM documents WHERE doc_status != 'private';", async (error, results) => {
     if(error) throw error;
 
     files = results.map(function(item) {
@@ -23,9 +24,12 @@ router.get('/', function(req, res){
 		}
     res.render('home',{title: 'Zen Doc', files: recentFiles});
   });
+
   console.log(req.user);
+
   console.log(req.isAuthenticated())
 });
+
 
 function readFile(filePath, fileName) {
 	return new Promise((resolve, reject) => {
@@ -36,8 +40,20 @@ function readFile(filePath, fileName) {
 	});
 };
 
+/*
+function readFile(fileName) {
+	return new Promise((resolve, reject) => {
+		fs.readFile(fileName, 'utf8', function(error, contents) {
+			if(error) reject(error.message);
+			resolve(contents);
+		});
+	});
+};
+*/
+
+//Checking for private and see if docs will appear, added WHERE statement
 router.get('/documents', function(req, res){
-  db.query("SELECT * FROM documents;", (error, results) => {
+  db.query("SELECT * FROM documents WHERE doc_status <> 'private';", (error, results) => {
     if(error) throw error;
     files = results.map(function(item) {
       item.url = "/doc_editor/" + item.doc_id
@@ -46,20 +62,6 @@ router.get('/documents', function(req, res){
     res.json(files);
     });
 });
-
-//User access to documents
-
-router.post('/private', function(req,res)
-{
-	const private = req.body.status;
-	db.query("INSERT INTO documents (status) VALUSE (?);", [private], (error, results) => {
-			if(error) throw error;
-			res.send()
-	});
-});
-
-
-
 
 router.get('/alldocuments', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
@@ -100,7 +102,7 @@ router.get('/profile', authenticationMiddleware(), function(req, res){
 		if(error) throw error;
 		//var docs = results;
 		files = results.map(function(item) {
-			item.url = "/doc_editor/" + item.doc_id
+			item.url = "/doc_editor/" + item.doc_id + "hello"
 			return item;
 		});
 		res.render('profile', {title: 'Profile', user:req.user, files:files});
@@ -158,33 +160,86 @@ router.delete('/user/:id', function(req, res){
 	});
 });
 
+/*
+//Function to load a document.
 router.get('/doc_editor/:id', function(req, res) {
   var id = req.params.id;
   db.query("SELECT * FROM documents where doc_id = " + id, (error, results) => {
     if(error) throw error;
 		file = results;
-    fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
+    //fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
+		fs.readFile(file[0].file_name, 'utf8', function(error, contents) {
 			if(error) throw error;
 			res.render('doceditor', {title: 'DocPage', file:results[0], contents, user: req.user});
 			});
   	});
 });
+*/
+
+
+//Router with restricted status
+router.get('/doc_editor/:id', function(req,res){
+	var id = req.params.id;
+	var doc_status = req.body.doc_status;
+	db.query("SELECT * FROM documents WHERE doc_id=?;", [id], async (err, results) => {
+			if(err) throw err;
+			file=results;
+			const condition_status = file[0].doc_status;
+			fs.readFile(file[0].file_name, 'utf8', function(err, contents){
+				if(err)
+				{
+					throw err;
+				}
+				else if(condition_status=="restricted" && req.user==false)
+				{
+				res.render('doceditor3', {file:results[0], contents, user: req.user, doc_status: req.doc_status});
+			  }
+				else if(condition_status=="public" && req.user==false)
+				{
+					res.render('doceditor3', {file:results[0], contents, user: req.user, doc_status: req.doc_status});
+				}
+			else
+			{
+				res.render('doceditor2', {file:results[0], contents, user: req.user, doc_status: req.doc_status});
+			}
+			});
+	});
+});
+
+
+
+//Router for shared docs
+router.post('/share_doc', function(req, res){
+	var doc_id = req.body.doc_id;
+	var username = req.body.username;
+	db.query("INSERT INTO shared_doc(doc_id, username) VALUES (?,?);", [doc_id, username], (err,results) =>{
+		if(err) throw err;
+		res.send()
+	});
+});
+
+
 
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
-<<<<<<< HEAD
-	const file_path = '‎/⁨Users/alexkozlenko/Downloads/';
-=======
-	const file_path = '/Users/MacBookPro1/Desktop/'
-	//const file_path = '../../../../Downloads/';
->>>>>>> 0d901bb0d0c134bd9e030bd7aa7253583fa41c8a
+	const file_path = '‎';
 	const user_id = req.user.id;
-	console.log(file_path);
-	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
+	const doc_status = req.body.doc_status;
+	const file_content = req.body.file_content;
+	console.log(doc_status);
+	fs.writeFile(file_name,file_content, function(err){
+		if(err) throw err;
+		console.log("The file was successfully saved.");
+	});
+	//db.query("INSERT INTO documents(user_id, file_path, file_name,doc_status) VALUES (?,?,?,?);", [user_id, file_path, file_name, doc_status], (err, results, field) => {
+
+	db.query("INSERT INTO documents(user_id, file_name,doc_status) VALUES (?,?,?);", [user_id, file_name, doc_status], (err, results, field) => {
 		if (err) throw err;
 		res.send();
 	});
 });
+
+
 
 router.post('/saveword', function(req, res) {
 	const word = req.body.word;

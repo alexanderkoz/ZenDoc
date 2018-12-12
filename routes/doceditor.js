@@ -12,20 +12,33 @@ fetch("/taboowords")
 
 function saveToFile()
 {
-  var text = document.getElementById("inputText").value;
-  var textBlob = new Blob([text], {type:"text/plain"});
-  var textUrl = window.URL.createObjectURL(textBlob);
-  var fileName = document.getElementById("fileName").value;
-  console.log(fileName);
-  var link = document.createElement("a");
-  link.download = fileName;
-  link.innerHTML = "Download";
-  link.href = textUrl;
-  link.onclick = destroyElement;
-  link.style.display = "none";
-  document.body.appendChild(link);
 
-  link.click();
+
+  var text = document.getElementById("inputText").value;
+//  var textBlob = new Blob([text], {type:"text/plain"});
+//  var textUrl = window.URL.createObjectURL(textBlob);
+  var fileName = document.getElementById("fileName").value;
+
+	//var getValue = document.getElementById("statusMenu").selectedIndex;
+	//var statusDoc = document.getElementsByTagName("option")[getValue].value;
+  //console.log(statusDoc);
+  //var link = document.createElement("a");
+  //link.download = fileName;
+  //link.innerHTML = "Download";
+  //link.href = textUrl;
+  //link.onclick = destroyElement;
+  //link.style.display = "none";
+  //document.body.appendChild(link);
+
+//console.log(docAccessesStatus());
+
+
+
+
+
+
+
+  //link.click();
 
   fetch('/savedoc', {
     method: 'POST',
@@ -33,7 +46,8 @@ function saveToFile()
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({file_name: fileName})})
+    body: JSON.stringify({file_name: fileName, doc_status: checkDocStatus(), file_content: text})
+	})
     .then(response => {
       alert("File successfully saved!")
     })
@@ -43,6 +57,7 @@ function destroyElement(e)
 {
   document.body.removeChild(e.target);
 }
+
 
 function loadFromFile()
 {
@@ -57,22 +72,7 @@ function loadFromFile()
   fileReader.readAsText(fileLoad, "UTF-8");
 }
 
-// //Taboo words
 
-// function tabooReplace()
-// {
-//     var tabooWords = ['one', 'two', 'three', 'four'];
-//     //var tabooWords = results;
-//     var text = document.getElementById('inputText').value;
-//     for(i =0; i<tabooWords.length;i++)
-//     {
-//       if(text==tabooWords[i])
-//       {
-//           var replaceWord = text.replace(new RegExp(tabooWords[i], "g"), "UNK");
-//           document.getElementById('inputText').value = replaceWord;
-//       }
-//     }
-// }
 function applyTabooWords(words) {
   var index = 0;
   //var words = ['apple', 'fat'];
@@ -98,4 +98,32 @@ function applyTabooWords(words) {
     index = result.length;
     this.value = result;
   })
+}
+
+function checkDocStatus() {
+
+	var getValue = document.getElementById("statusMenu").selectedIndex;
+	var statusDoc = document.getElementsByTagName("option")[getValue].value;
+  console.log(statusDoc);
+
+	return statusDoc;
+
+}
+
+function shareDoc(){
+
+	var username = document.getElementById("username").value;
+
+	fetch('/share_doc', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({username: username})
+	})
+	.then(response => {
+		alert(`File is shared with${username}!`)
+	})
+
 }

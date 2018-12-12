@@ -329,10 +329,8 @@ hr {
     <input id="fileName"type="text" placeholder="Your File Name" value="">
 
   </div>
-	<button onclick="shareDoc()" style ="float: right;" type="button" > Share </button>
-  <input id="username"type="text" style ="float: right;" placeholder="User name" value="">
 
-	<button onclick="saveToFile()" class="myButton"> Save </button>
+  <button onclick="saveToFile()" class="myButton"> Save </button>
   <hr>
   Select a File to Load:
   <input type="file"  id="fileLoad" />
@@ -351,7 +349,7 @@ hr {
 <div class="spacer"></div>
 
 
-  				<center><textarea id="inputText" cols="250" rows="65">{{contents}}</textarea></center>
+  				<center><textarea id="inputText" cols="250" rows="65" readonly>{{contents}}</textarea></center>
 
 
 
