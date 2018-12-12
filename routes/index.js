@@ -112,7 +112,7 @@ router.get('/document/:id', function(req, res) {
 
 // router.post('/document/:id', function(req, res) {
 // 	var id = req.params.id;
-// 	var value = 
+// 	var value =
 //   db.query(`UPDATE documents SET locked = ${value} WHERE condition;`, (error, results) => {
 //     if(error) throw error;
 //     file = results;
@@ -158,7 +158,8 @@ router.get('/doc_editor/:id', function(req, res) {
 
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
-	const file_path = '../../../../Downloads/';
+	const file_path = '/Users/MacBookPro1/Desktop/'
+	//const file_path = '../../../../Downloads/';
 	const user_id = req.user.id;
 	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
 		if (err) throw err;
@@ -279,40 +280,10 @@ router.get('/applications/:id', function(req, res) {
 	})
 })
 
-<<<<<<< HEAD
-router.get('/complaints', function(req, res){
-  db.query("SELECT * FROM complaints;", (error, results) => {
-		if(error) throw error;
-		var complaints = results;
-		db.query("SELECT users.id, users.first_name, users.last_name from users INNER JOIN complaints ON users.id=complaints.user_id;", (error, results) => {
-			if(error) throw error;
-			var names = results;
-			for (var i = 0; i < complaints.length; i++) {
-				for (var j = 0; j < names.length; j++) {
-					if (complaints[i].user_id === names[j].id) {
-						complaints[i].first_name = names[j].first_name;
-						complaints[i].last_name = names[j].last_name;
-					}
-				}
-			}
-			res.render('complaints', {title: 'Complaints', complaints:complaints});
-		})
-
-  });
-});
-
-
-
-router.post('/login', passport.authenticate(
-  'local',{
-    successRedirect: '/profile',
-    failureRedirect: '/login'
-=======
 router.post('/login', passport.authenticate(
   'local',{
     successRedirect: '/profile',
     failureRedirect: '/'
->>>>>>> 9c1dfa3e04de9a66ef5fc950c6e872c9e1b2efde
 }));
 
 router.post('/adminlogin', passport.authenticate(

@@ -76,7 +76,7 @@ var express = require('express');
 
   passport.use(new LocalStrategy(
   	function(username, password, done) {
-  		db.query('SELECT password FROM users WHERE username = ?', [username], function(err, results, fields) {
+  		db.query('SELECT * FROM users WHERE username = ?', [username], function(err, results, fields) {
   			if (err) {
   				done(err)
   			};
