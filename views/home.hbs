@@ -200,6 +200,11 @@ input#search-bar{
 	</div>
 	<section></section>
 
+	<form class="search-container">
+    	<input type="text" id="search-bar" placeholder="What can I help you with today?">
+    	<button type="submit" class="search-button"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></button>
+  	</form>
+
 	<div id="cardslist">
 		{{#each files}}
 		<a href={{this.url}}>
@@ -217,5 +222,36 @@ input#search-bar{
 		{{/each}}
 	</div>
 </body>
-
+<script src="/js/auto-complete.min.js"></script>
+<script>
+	var files = [];
+	fetch("/documents")
+	.then(response => response.json())
+	.then(response => {
+		files = response;
+	})
+	.catch(err => {
+		files = [];
+	})
+	new autoComplete({
+    selector: '#search-bar',
+    minChars: 1,
+	source: function(term, suggest){
+        term = term.toLowerCase();
+        var matches = [];
+        for (i=0; i<files.length; i++)
+            if (~files[i].file_name.toLowerCase().indexOf(term)) matches.push(files[i]);
+        suggest(matches);
+    },
+	renderItem: function (item, search){
+        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+        return '<div class="autocomplete-suggestion" data-url="'+item.url+'" > '+item.file_name+'</div>';
+    },
+    onSelect: function(e, term, item){
+        var value = item.getAttribute("data-url");
+		window.location.href = value;
+    }
+	});
+</script>
 </html>
