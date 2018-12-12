@@ -9,18 +9,32 @@ module.exports = function(db) {
   /* GET home page. */
 
 router.get('/', function(req, res){
-  db.query("SELECT * FROM documents;", (error, results) => {
+  db.query("SELECT * FROM documents;", async (error, results) => {
     if(error) throw error;
 
     files = results.map(function(item) {
       item.url = "/doc_editor/" + item.doc_id
       return item;
-    })
-    res.render('home',{title: 'Zen Doc', files: files.slice(files.length - 3, files.length)});
+		})
+		var recentFiles = files.slice(files.length - 3, files.length);
+		for (var i = 0; i < recentFiles.length; i++) {
+			let content = await readFile(recentFiles[i].file_path, recentFiles[i].file_name);
+			recentFiles[i].content = content.substring(0, 150);
+		}
+    res.render('home',{title: 'Zen Doc', files: recentFiles});
   });
   console.log(req.user);
   console.log(req.isAuthenticated())
 });
+
+function readFile(filePath, fileName) {
+	return new Promise((resolve, reject) => {
+		fs.readFile(filePath + fileName, 'utf8', function(error, contents) {
+			if(error) reject(error.message);
+			resolve(contents);
+		});
+	});
+};
 
 router.get('/documents', function(req, res){
   db.query("SELECT * FROM documents;", (error, results) => {
@@ -301,12 +315,16 @@ router.post('/complaint_doc', function(req, res, next) {
 //Complaint Form to complain about OU
 router.post('/complaint_ou', function(req, res, next) {
   const text = req.body.text;
-  const username = req.body.username;
-  db.query("SELECT id FROM users WHERE username =?;", [username], (err, results, field) => {
+	const username = req.body.username;
+	// db.query("SELECT * FROM users;"), (err, results) => {
+	// 	if (err) throw err;
+	// 	if (result)
+	// }
+  db.query("SELECT id FROM users WHERE username = ?;", [username], (err, results, field) => {
     if (err) throw err;
-    var test_id = results[0].id;
+		var test_id = results[0].id;
 
-    db.query("INSERT INTO complaints(user_id,comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
+    db.query("INSERT INTO complaints(user_id, comment_text, complaint_type) VALUES (?,?, 'OU');", [test_id, text], (err, results, field) => {
       if (err) throw err;
       res.redirect('/') //redirect to document panel
     });
