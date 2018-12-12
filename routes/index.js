@@ -172,7 +172,12 @@ router.get('/doc_editor/:id', function(req, res) {
 
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
+<<<<<<< HEAD
 	const file_path = '‎/⁨Users/alexkozlenko/Downloads/';
+=======
+	const file_path = '/Users/MacBookPro1/Desktop/'
+	//const file_path = '../../../../Downloads/';
+>>>>>>> 0d901bb0d0c134bd9e030bd7aa7253583fa41c8a
 	const user_id = req.user.id;
 	console.log(file_path);
 	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
