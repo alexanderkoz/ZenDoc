@@ -155,13 +155,14 @@ router.get('/doc_editor/:id', function(req, res) {
     fs.readFile(file[0].file_path + file[0].file_name, 'utf8', function(error, contents) {
 			if(error) throw error;
 			res.render('doceditor', {title: 'DocPage', file:results[0], contents, user: req.user});
-			}); 
+			});
   	});
 });
 
 router.post('/savedoc', function(req, res) {
 	const file_name = req.body.file_name;
-	const file_path = '../../../../Downloads/';
+	const file_path = '/Users/MacBookPro1/Desktop/'
+	//const file_path = '../../../../Downloads/';
 	const user_id = req.user.id;
 	db.query("INSERT INTO documents(user_id, file_path, file_name) VALUES (?,?,?);", [user_id, file_path, file_name], (err, results, field) => {
 		if (err) throw err;
