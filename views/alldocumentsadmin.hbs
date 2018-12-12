@@ -152,6 +152,10 @@
     color: black;
     }
 
+    .hidden-block {
+        display: none;
+    }
+
     </style>
 
     <body>
@@ -186,14 +190,14 @@
                 {{#each files}}	
                     <div class="main-div clearfix" data-file-id={{this.doc_id}}>
                         <div class="doc-info">
-                            <a class="unlocked-variant" href={{this.url}}>
+                            <a class="unlocked-variant {{#if this.locked}}hidden-block{{/if}}" href={{this.url}}>
                                 <p class="info">{{this.file_name}}</p>
                             </a>
-                            {{!-- <p class="info locked-variant">{{this.file_name}}</p> --}}
+                            <p class="info locked-variant {{#unless this.locked}}hidden-block{{/unless}}">{{this.file_name}}</p>
                         </div>
                         <div> 
                             <button class="unlock-button" id="green" data-unlock="true" data-id={{this.doc_id}}>Unlock</button>
-                            <button class="lock-button" id="red" data-unlock="false" data-id={{this.doc_id}}>Lock</button>
+                            <button class="lock-button"  id="red" data-unlock="false" data-id={{this.doc_id}}>Lock</button>
                         </div>
                     </div>		
                 {{/each}}
@@ -201,7 +205,7 @@
         </div>
     </body>
     <script>
-        {{!-- var filesWrappers = document.querySelector(".files-wrapper");
+        var filesWrappers = document.querySelector(".files-wrapper");
 
         filesWrappers.addEventListener("click", handler);
 
@@ -211,35 +215,49 @@
                 unlockHandler(target, this);
                 return;
             }
-            approveHandler(target, this);
+            lockHandler(target, this);
         }
 
         function unlockHandler(target, parent) {
             var fileId = target.getAttribute("data-id");
-            fetch(`/applications/${userId}`, {
-                method: "delete"
-            })
+            fetch(`/document/${fileId}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    }, 
+                body: JSON.stringify({value: 0})})
             .then(response => {
-                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
-                alert("Applicant was removed!") 
+                var wrapper = parent.querySelector(`div[data-file-id="${fileId}"]`); 
+                var unlockedVariant = wrapper.querySelector(".unlocked-variant");
+                unlockedVariant.className = unlockedVariant.className.replace(/hidden-block/g, '');
+                var lockedVariant = wrapper.querySelector(".locked-variant");
+                lockedVariant.className = lockedVariant.className + ' hidden-block';
             })
             .catch((err) => {
                 console.log(err.message);
             })  
         }
 
-        function approveHandler(target, parent) {
-            var userId = target.getAttribute("data-id");
-            fetch(`/applications/${userId}`, {
-                method: "get"
-            })
+        function lockHandler(target, parent) {
+            var fileId = target.getAttribute("data-id");
+            fetch(`/document/${fileId}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    }, 
+                body: JSON.stringify({value: 1})})
             .then(response => {
-                parent.querySelector(`div[data-user-id="${userId}"]`).remove(); 
-                alert("Applicant was added!")  
+                var wrapper = parent.querySelector(`div[data-file-id="${fileId}"]`); 
+                var unlockedVariant = wrapper.querySelector(".unlocked-variant");
+                unlockedVariant.className = unlockedVariant.className + ' hidden-block';
+                var lockedVariant = wrapper.querySelector(".locked-variant");
+                lockedVariant.className = lockedVariant.className.replace(/hidden-block/g, '');    
             })
             .catch((err) => {
                 console.log(err.message);
             })  
-    } --}}
+        }
     </script>
 </html>
